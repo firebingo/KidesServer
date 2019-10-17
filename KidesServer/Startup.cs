@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using KidesServer.Helpers;
 using KidesServer.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -48,55 +49,65 @@ namespace KidesServer
 				opt.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
 			});
 
-			services
-				.AddAuthentication(BasicAuthenticationDefaults.AuthenticationScheme)
-				.AddBasicAuthentication(options =>
+			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+				.AddCookie(options =>
 				{
-					options.Realm = "KidesServer";
-					options.Events = new BasicAuthenticationEvents
+					options.Events.OnRedirectToLogin = (context) =>
 					{
-						OnValidatePrincipal = context =>
-						{
-							try
-							{
-								FileControllerPerson user = null;
-								if (!string.IsNullOrWhiteSpace(context.UserName) && AppConfig.Config.FileAccess.People.ContainsKey(context.UserName.ToLowerInvariant()))
-									user = AppConfig.Config.FileAccess.People[context.UserName.ToLowerInvariant()];
-								if (!AppConfig.Config.FileAccess.People.ContainsKey("anon"))
-								{
-									context.AuthenticationFailMessage = "Authentication failed.";
-									return Task.CompletedTask;
-								}
-								if (user == null)
-									user = AppConfig.Config.FileAccess.People["anon"];
-
-								if (user != null && user.CheckPassword(context.Password))
-								{
-									var claims = new List<Claim>
-								{
-									new Claim(ClaimTypes.Name,
-											  string.IsNullOrWhiteSpace(context.UserName) ? "anon" : context.UserName,
-											  context.Options.ClaimsIssuer)
-								};
-
-									var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, BasicAuthenticationDefaults.AuthenticationScheme));
-									context.Principal = principal;
-
-									return Task.CompletedTask;
-								}
-							}
-							catch (Exception ex)
-							{
-								ErrorLog.WriteError(ex);
-								context.AuthenticationFailMessage = "Authentication failed.";
-								return Task.CompletedTask;
-							}
-
-							context.AuthenticationFailMessage = "Authentication failed.";
-							return Task.CompletedTask;
-						}
+						context.Response.StatusCode = 401;
+						return Task.CompletedTask;
 					};
 				});
+
+			//services
+			//	.AddAuthentication(BasicAuthenticationDefaults.AuthenticationScheme)
+			//	.AddBasicAuthentication(options =>
+			//	{
+			//		options.Realm = "KidesServer";
+			//		options.Events = new BasicAuthenticationEvents
+			//		{
+			//			OnValidatePrincipal = context =>
+			//			{
+			//				try
+			//				{
+			//					FileControllerPerson user = null;
+			//					if (!string.IsNullOrWhiteSpace(context.UserName) && AppConfig.Config.FileAccess.People.ContainsKey(context.UserName.ToLowerInvariant()))
+			//						user = AppConfig.Config.FileAccess.People[context.UserName.ToLowerInvariant()];
+			//					if (!AppConfig.Config.FileAccess.People.ContainsKey("anon"))
+			//					{
+			//						context.AuthenticationFailMessage = "Authentication failed.";
+			//						return Task.CompletedTask;
+			//					}
+			//					if (user == null)
+			//						user = AppConfig.Config.FileAccess.People["anon"];
+			//
+			//					if (user != null && user.CheckPassword(context.Password))
+			//					{
+			//						var claims = new List<Claim>
+			//					{
+			//						new Claim(ClaimTypes.Name,
+			//								  string.IsNullOrWhiteSpace(context.UserName) ? "anon" : context.UserName,
+			//								  context.Options.ClaimsIssuer)
+			//					};
+			//
+			//						var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, BasicAuthenticationDefaults.AuthenticationScheme));
+			//						context.Principal = principal;
+			//
+			//						return Task.CompletedTask;
+			//					}
+			//				}
+			//				catch (Exception ex)
+			//				{
+			//					ErrorLog.WriteError(ex);
+			//					context.AuthenticationFailMessage = "Authentication failed.";
+			//					return Task.CompletedTask;
+			//				}
+			//
+			//				context.AuthenticationFailMessage = "Authentication failed.";
+			//				return Task.CompletedTask;
+			//			}
+			//		};
+			//	});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,6 +136,9 @@ namespace KidesServer
 				routes.MapRoute(
 					name: "default",
 					template: "{controller=Home}/{action=Root}");
+				routes.MapRoute(
+					name: "FileBrowser",
+					template: "{controller=FileBrowser}/{action=Login}");
 				routes.MapRoute(
 					name: "KidesApi",
 					template: "api/{controller}/{id}");
