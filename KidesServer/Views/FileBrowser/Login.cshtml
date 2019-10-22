@@ -7,14 +7,20 @@
 	<meta name="theme-color" content="#393939" />
 	<meta name="viewport" content="width=device-width, initial-scale=0.4" />
 </head>
-<body>
-	@if (User.Identity.IsAuthenticated)
-	{
-		<div>@User.Identity.Name authenticated</div>
-	}
-	else
-	{
-		<div>unauthenticated</div>
-	}
+<body class="login-page" onload="onLoginBodyLoaded()">
+	<link rel="stylesheet" type="text/css" href="../Css/Less/generic.min.css">
+	<link rel="stylesheet" type="text/css" href="../Css/Less/fileBrowser.min.css">
+	<script src="../Js/fileBrowser.js" type="application/javascript" charset="UTF-8"></script>
+	<div id="loading-parent" class="centered">Loading...</div>
+	<div id="fade-parent" class="fade-in">
+		<form class="login-form" onsubmit="onLoginFormSubmit(event)">
+			<div class="centered">
+				<input id="login-username" class="login-text" type="text" autocomplete="username" placeholder="Username" />
+				<input id="login-password" class="login-text" type="password" autocomplete="current-password" placeholder="Password" />
+				<input type="submit" class="login-submit" value="Login" />
+				<span id="login-error" style="display: none;">Login Failed</span>
+			</div>
+		</form>
+	</div>
 </body>
 </html>

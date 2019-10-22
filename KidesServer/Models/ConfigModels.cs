@@ -51,6 +51,7 @@ namespace KidesServer.Models
 		public string Password = "";
 		public bool NeedsPasswordHashed = true;
 		public string HashSalt = "";
+		public bool Disabled = false;
 		public bool Upload = false;
 		public bool Download = true;
 		public bool List = false;

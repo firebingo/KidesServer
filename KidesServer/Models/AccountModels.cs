@@ -5,9 +5,16 @@ using System.Threading.Tasks;
 
 namespace KidesServer.Models
 {
+	public static class AuthInfo
+	{
+		public static readonly string LoginAuthScheme = "Cookies";
+		public static readonly string CookieName = "KidesAuthCookie";
+	}
+
 	public class LoginModel
 	{
 		public string Username { get; set; }
 		public string Password { get; set; }
+		public bool RememberMe { get; set; }
 	}
 }

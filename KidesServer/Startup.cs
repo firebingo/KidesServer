@@ -33,13 +33,6 @@ namespace KidesServer
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			services.Configure<CookiePolicyOptions>(options =>
-			{
-				// This lambda determines whether user consent for non-essential cookies is needed for a given request.
-				options.CheckConsentNeeded = context => true;
-				options.MinimumSameSitePolicy = SameSiteMode.None;
-			});
-
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -49,15 +42,50 @@ namespace KidesServer
 				opt.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
 			});
 
-			services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-				.AddCookie(options =>
-				{
-					options.Events.OnRedirectToLogin = (context) =>
+			try
+			{
+				services.AddAuthentication(AuthInfo.LoginAuthScheme)
+					.AddCookie(options =>
 					{
-						context.Response.StatusCode = 401;
-						return Task.CompletedTask;
-					};
-				});
+						options.Events.OnRedirectToLogin = (context) =>
+						{
+							context.Response.StatusCode = 401;
+							return Task.CompletedTask;
+						};
+						options.Events.OnValidatePrincipal = async (context) =>
+						{
+							var username = context.Principal?.Identity?.Name ?? string.Empty;
+							FileControllerPerson user = null;
+							if (!string.IsNullOrWhiteSpace(username) && AppConfig.Config.FileAccess.People.ContainsKey(username.ToLowerInvariant()))
+								user = AppConfig.Config.FileAccess.People[username.ToLowerInvariant()];
+
+							if (user == null && !AppConfig.Config.FileAccess.People.ContainsKey("anon"))
+							{
+								context.RejectPrincipal();
+								await context.HttpContext.SignOutAsync(AuthInfo.LoginAuthScheme);
+								return;
+							}
+							else if (user == null)
+								user = AppConfig.Config.FileAccess.People["anon"];
+
+							if (user.Disabled)
+							{
+								context.RejectPrincipal();
+								await context.HttpContext.SignOutAsync(AuthInfo.LoginAuthScheme);
+								return;
+							}
+
+							return;
+						};
+						options.SlidingExpiration = true;
+						options.ExpireTimeSpan = TimeSpan.FromDays(5);
+						options.Cookie.Name = AuthInfo.CookieName;
+					});
+			}
+			catch(Exception ex)
+			{
+
+			}
 
 			//services
 			//	.AddAuthentication(BasicAuthenticationDefaults.AuthenticationScheme)
@@ -128,7 +156,10 @@ namespace KidesServer
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
-			app.UseCookiePolicy();
+			app.UseCookiePolicy(new CookiePolicyOptions()
+			{
+				MinimumSameSitePolicy = SameSiteMode.Strict
+			});
 			app.UseAuthentication();
 
 			app.UseMvc(routes =>

@@ -27,44 +27,7 @@ namespace KidesServer.Controllers
 			if (User.Identity.IsAuthenticated)
 				return Root();
 
-			return View();
-		}
-
-		[HttpPost]
-		public async Task<IActionResult> Login([FromBody]LoginModel loginInfo)
-		{
-			try
-			{
-				FileControllerPerson user = null;
-				if (!string.IsNullOrWhiteSpace(loginInfo.Username) && AppConfig.Config.FileAccess.People.ContainsKey(loginInfo.Username.ToLowerInvariant()))
-					user = AppConfig.Config.FileAccess.People[loginInfo.Username.ToLowerInvariant()];
-
-				if (!AppConfig.Config.FileAccess.People.ContainsKey("anon"))
-					return Unauthorized();
-
-				if (user == null)
-					user = AppConfig.Config.FileAccess.People["anon"];
-
-				if (user != null && user.CheckPassword(loginInfo.Password))
-				{
-					var claims = new List<Claim>
-					{
-						new Claim(ClaimTypes.Name, string.IsNullOrWhiteSpace(loginInfo.Username) ? "anon" : loginInfo.Username)
-					};
-
-					var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme));
-					await HttpContext.SignInAsync(principal);
-
-					return Ok();
-				}
-			}
-			catch (Exception ex)
-			{
-				ErrorLog.WriteError(ex);
-				return Unauthorized();
-			}
-			
-			return Unauthorized();
+			return View("Login");
 		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
