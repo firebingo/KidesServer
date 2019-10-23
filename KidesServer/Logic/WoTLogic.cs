@@ -14,6 +14,7 @@ namespace KidesServer.Logic
 		private static readonly string appId = "";
 		private static readonly Dictionary<string, string> userInfoUrls = null;
 		private static readonly Dictionary<string, string> userDataUrls = null;
+		private static readonly HttpClient _client = null;
 		//public static string userInfoUrl = "https://api.worldoftanks.com/wot/account/list/";
 		//public static string userDataUrl = "https://api.worldoftanks.com/wot/account/info/";
 
@@ -38,6 +39,9 @@ namespace KidesServer.Logic
 					{ "kr", "https://api.worldoftanks.kr/wot/account/info/" },
 					{ "asia", "https://api.worldoftanks.asia/wot/account/info/" },
 				};
+
+				_client = new HttpClient();
+				_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 			}
 			catch (Exception e)
 			{
@@ -47,14 +51,7 @@ namespace KidesServer.Logic
 
 		public static async Task<WotBasicUser> CallInfoAPI(string searchString, string region)
 		{
-			HttpClient client = new HttpClient
-			{
-				BaseAddress = new Uri(userInfoUrls[region])
-			};
-
-			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-			HttpResponseMessage response = await client.GetAsync($"?application_id={appId}&search={searchString}");
+			HttpResponseMessage response = await _client.GetAsync($"{userInfoUrls[region]}?application_id={appId}&search={searchString}");
 			if (response.IsSuccessStatusCode)
 			{
 				try
@@ -83,14 +80,7 @@ namespace KidesServer.Logic
 
 		public static Task<WotUserInfo> CallDataAPI(string accoundId, string accessToken, string region)
 		{
-			HttpClient client = new HttpClient
-			{
-				BaseAddress = new Uri(userDataUrls[region])
-			};
-
-			client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-			HttpResponseMessage response = client.GetAsync($"?application_id={appId}&account_id={accoundId}{(accessToken != null ? $"&access_token={accessToken}" : "")}").Result;
+			HttpResponseMessage response = _client.GetAsync($"{userDataUrls[region]}?application_id={appId}&account_id={accoundId}{(accessToken != null ? $"&access_token={accessToken}" : "")}").Result;
 			if (response.IsSuccessStatusCode)
 			{
 				try
