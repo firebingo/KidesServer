@@ -73,7 +73,7 @@
         #file-browser-left {
             min-width: 0;
             margin: 5px;
-            flex-basis: 70%;
+            flex-basis: 65%;
             display: flex;
             flex-direction: column;
 
@@ -158,6 +158,8 @@
                 div {
                     overflow: hidden;
                     text-overflow: ellipsis;
+                    white-space: nowrap;
+                    word-break: break-all;
                 }
             }
         }
@@ -165,7 +167,7 @@
         #file-browser-right {
             min-width: 0;
             margin: 5px;
-            flex-basis: 30%;
+            flex-basis: 35%;
             display: flex;
             flex-direction: column;
 
@@ -188,15 +190,21 @@
                     margin-bottom: 5px;
 
                     .selected-file-info-item-title {
-                        max-width: 50%;
+                        max-width: 40%;
                         text-align: left;
                     }
 
                     .selected-file-info-item-data {
-                        max-width: 50%;
+                        max-width: 60%;
                         text-align: right;
                         overflow: hidden;
                         text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+
+                    .selected-file-info-download {
+                        margin: auto;
+                        margin-top: 5px;
                     }
                 }
             }

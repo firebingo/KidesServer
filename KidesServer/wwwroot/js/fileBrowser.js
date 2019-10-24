@@ -131,6 +131,30 @@ async function getDirectoryInfo(path) {
     setPageInfo();
 }
 
+async function getFileInfo(filename, path) {
+    try {
+        browserListingError = "";
+
+        const res = await fetch(`api/v1/files/get-file-info/${filename}?directory=${path.replace('/', '\\')}`, {
+            method: 'GET',
+            cache: 'no-cache'
+        });
+        const json = await res.json();
+
+        if (res.ok && json.success) {
+            parseFileInfoResponse(filename, path, json);
+            buildSelectedFileInfo();
+        } else {
+            browserListingError = `An api error has occured: ${json.message}`;
+        }
+
+    } catch (ex) {
+        browserListingError = `A exception has occured: ${ex.message}`;
+    }
+
+    setPageInfo();
+}
+
 function parseDirectoryResponse(path, json) {
     browserListingDirectories[path] = {
         ...browserListingDirectories[path],
@@ -233,6 +257,17 @@ function parseDirectoryInfoResponse(path, json) {
     };
 }
 
+function parseFileInfoResponse(filename, path, json) {
+    selectedFileInfo = {
+        path: json.path.replace(/^\\{0,}/, ""),
+        name: json.name,
+        fileSizeBytes: json.sizeInBytes,
+        isDirectory: false,
+        createdUtc: moment(json.createdUtc),
+        lastModifiedUtc: moment(json.lastModifiedUtc)
+    }
+}
+
 function buildSelectedFileInfo() {
     if (!selectedFileInfo || !selectedFileInfo.name) {
         selectedFileInfoHtml = "<div></div>";
@@ -241,20 +276,36 @@ function buildSelectedFileInfo() {
 
     selectedFileInfoHtml = `<div class="file-browser-selected-file-info-info">`;
 
-    selectedFileInfoHtml += buildSelectedFileInfoItem("path", selectedFileInfo.path);
-    selectedFileInfoHtml += buildSelectedFileInfoItem("name", selectedFileInfo.name);
-    selectedFileInfoHtml += buildSelectedFileInfoItem("file size (KiB)", selectedFileInfo.fileSizeBytes / 1024);
+    selectedFileInfoHtml += buildSelectedFileInfoItem("Path", selectedFileInfo.path);
+    selectedFileInfoHtml += buildSelectedFileInfoItem("Name", selectedFileInfo.name);
+    selectedFileInfoHtml += buildSelectedFileInfoItem("File Size", `${fileSizeBytesToFriendlyString(selectedFileInfo.fileSizeBytes)}`, `${selectedFileInfo.fileSizeBytes} (B)`);
+    selectedFileInfoHtml += buildSelectedFileInfoItem("Created Time", selectedFileInfo.createdUtc.format('MMM Do YYYY, h:mm a'));
+    selectedFileInfoHtml += buildSelectedFileInfoItem("Last Modified", selectedFileInfo.lastModifiedUtc.format('MMM Do YYYY, h:mm a'));
+
+    //onclick="downloadFile(event, '${selectedFileInfo.name}', '${selectedFileInfo.path}')"
+
+    if (!selectedFileInfo.isDirectory) {
+        selectedFileInfoHtml += `
+<div class="selected-file-info-item">
+    <a class="selected-file-info-download" href="api/v1/files/get-file/${selectedFileInfo.name}?directory=${selectedFileInfo.path.replace(selectedFileInfo.name, "")}" download>
+        <button>download</button>
+    </a>
+</div>`;
+    }
 
     selectedFileInfoHtml += '</div>';
 }
 
-function buildSelectedFileInfoItem(key, value) {
+function buildSelectedFileInfoItem(key, value, title) {
+    if (!title) {
+        title = value;
+    }
     return `
     <div class="selected-file-info-item">
         <div class="selected-file-info-item-title">
             ${key}:
         </div>
-        <div class="selected-file-info-item-data" title="${value}">
+        <div class="selected-file-info-item-data" title="${title}">
             ${value}
         </div>
     </div>
@@ -290,8 +341,22 @@ function onItemNameClicked(ev) {
     if (directory) {
         getDirectoryInfo(path);
     } else {
-
+        const split = path.split("\\");
+        getFileInfo(_.last(split), _.initial(split).join("\\")); 
     }
 }
 
 //endregion Browser
+
+function fileSizeBytesToFriendlyString(bytes) {
+    if (bytes < 5120) {
+        return `${bytes} (B)`;
+    } else if (bytes < 5242880) {
+        return `${(bytes / 1024).toFixed(2)} (KiB)`;
+    } else if (bytes < 1073741824) {
+        return `${(bytes / 1024 / 1024).toFixed(2)} (MiB)`;
+    } else {
+        return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} (GiB)`;
+    }
+}
+
