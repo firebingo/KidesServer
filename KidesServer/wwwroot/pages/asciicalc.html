@@ -1,0 +1,59 @@
+<!-- Originally from http://www.thrill-project.com/archiv/coding/bitmap/ https://blog.thrill-project.com/ascii-art-shader/ -->
+<html>
+<head>
+
+</head>
+
+<body>
+
+<input type="checkbox" id="c1" onclick="upd()" />
+<input type="checkbox" id="c2" onclick="upd()" />
+<input type="checkbox" id="c3" onclick="upd()" />
+<input type="checkbox" id="c4" onclick="upd()"/>
+<input type="checkbox" id="c5" onclick="upd()"/>
+<br />
+<input type="checkbox" id="c6" onclick="upd()" />
+<input type="checkbox" id="c7" onclick="upd()" />
+<input type="checkbox" id="c8" onclick="upd()" />
+<input type="checkbox" id="c9" onclick="upd()" />
+<input type="checkbox" id="c10" onclick="upd()" />
+<br />
+<input type="checkbox" id="c11" onclick="upd()" />
+<input type="checkbox" id="c12" onclick="upd()" />
+<input type="checkbox" id="c13" onclick="upd()" />
+<input type="checkbox" id="c14" onclick="upd()" />
+<input type="checkbox" id="c15" onclick="upd()" />
+<br />
+<input type="checkbox" id="c16" onclick="upd()" />
+<input type="checkbox" id="c17" onclick="upd()" />
+<input type="checkbox" id="c18" onclick="upd()" />
+<input type="checkbox" id="c19" onclick="upd()" />
+<input type="checkbox" id="c20" onclick="upd()" />
+<br />
+<input type="checkbox" id="c21" onclick="upd()" />
+<input type="checkbox" id="c22" onclick="upd()" />
+<input type="checkbox" id="c23" onclick="upd()" />
+<input type="checkbox" id="c24" onclick="upd()" />
+<input type="checkbox" id="c25" onclick="upd()" />
+
+<br /><br />
+
+<pre>
+<span id="output"></span>
+</pre>
+<script>
+
+function upd()
+{
+	var s = "";
+	for(var i = 1; i <= 25; i++) s += document.getElementById('c'+i).checked ? "1" : "0";
+	var b = parseInt(s, 2);
+	document.getElementById('output').innerHTML = "bin: " + s + "<br />int: " + b.toString();
+}
+
+upd();
+
+</script>
+</body>
+
+</html>
