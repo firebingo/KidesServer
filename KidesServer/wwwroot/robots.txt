@@ -3,5 +3,6 @@ Disallow: /*.json
 Disallow: /*.min.json
 Disallow: /js/*.json
 Disallow: /js/*.min.json
+Disallow: /filebrowser
 
 Sitemap: https://server.icebingo.io/

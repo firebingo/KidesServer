@@ -91,6 +91,86 @@ namespace KidesServer.Logic
 			}
 		}
 
+		public static DirectoryInfoResult GetDirectoryInfo(FileControllerPerson user, string directory)
+		{
+			try
+			{
+				var res = new DirectoryInfoResult();
+
+				var (permission, subPermission) = CheckDirectoryPermission(user, directory);
+
+				if (!permission)
+					return new DirectoryInfoResult() { success = false, message = "USER_NO_PERMISSIONS" };
+
+				var fullPath = $"{AppConfig.Config.FileAccess.RootDirectory}\\{directory}";
+				if (subPermission)
+					res.Directories = Directory.EnumerateDirectories(fullPath).Select(x => x.Replace(AppConfig.Config.FileAccess.RootDirectory, "").TrimStart('\\')).ToList();
+				else
+					res.Directories = new List<string>();
+
+				res.Files = Directory.EnumerateFiles(fullPath).Select(x => Path.GetFileName(x)).ToList();
+
+				res.Name = Path.GetFileName(fullPath);
+				res.Path = directory;
+				res.SizeInBytes = 0;
+				res.CreatedUtc = Directory.GetCreationTimeUtc(fullPath);
+				res.LastModifiedUtc = Directory.GetLastWriteTimeUtc(fullPath);
+
+				res.success = true;
+				res.message = string.Empty;
+				return res;
+			}
+			catch (Exception ex)
+			{
+				ErrorLog.WriteError(ex);
+				return new DirectoryInfoResult()
+				{
+					success = false,
+					message = ex.Message
+				};
+			}
+		}
+
+		public static FileInfoResult GetFileInfo(FileControllerPerson user, string fileName, string directory)
+		{
+			try
+			{
+				var res = new FileInfoResult();
+
+				if (string.IsNullOrWhiteSpace(fileName))
+					return new FileInfoResult() { success = false, message = "INVALID_PARAMS" };
+
+				if (!string.IsNullOrWhiteSpace(directory))
+					fileName = $"{directory}\\{fileName}";
+
+				if (!CheckFilePermission(user, fileName))
+					return new FileInfoResult() { message = "USER_NO_PERMISSIONS", success = false };
+
+				var fullPath = $"{AppConfig.Config.FileAccess.RootDirectory}\\{fileName}";
+
+				var fileInfo = new FileInfo(fullPath);
+
+				res.Name = Path.GetFileName(fullPath);
+				res.Path = fileName;
+				res.SizeInBytes = fileInfo.Length;
+				res.CreatedUtc = fileInfo.CreationTimeUtc;
+				res.LastModifiedUtc = fileInfo.LastWriteTimeUtc;
+
+				res.success = true;
+				res.message = string.Empty;
+				return res;
+			}
+			catch (Exception ex)
+			{
+				ErrorLog.WriteError(ex);
+				return new FileInfoResult()
+				{
+					success = false,
+					message = ex.Message
+				};
+			}
+		}
+
 		public static BaseResult DeleteFile(FileControllerPerson user, string fileName)
 		{
 			try

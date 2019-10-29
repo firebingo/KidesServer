@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Kides Server File Browser</title>
+	<meta name="Description" content="File browser">
+	<meta name="theme-color" content="#393939" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+</head>
+<body class="browser-page" onload="onBrowserBodyLoaded()">
+	<link rel="stylesheet" type="text/css" href="../Css/Less/generic.min.css">
+	<link rel="stylesheet" type="text/css" href="../Css/Less/fileBrowser.min.css">
+	<script src="../Js/underscore-min.js" type="application/javascript" charset="UTF-8"></script>
+	<script src="../Js/moment.min.js" type="application/javascript" charset="UTF-8"></script>
+	<script src="../Js/fileBrowser.js" type="application/javascript" charset="UTF-8"></script>
+	<div id="loading-parent" class="centered">Loading...</div>
+	<div id="fade-parent" class="fade-in">
+		<div id="file-browser-left">
+			<div id="file-browser-current-directory">
+				<span>Directory:</span>
+				<input id="file-browser-current-directory-input" type="text" autocomplete="off" />
+			</div>
+			<div id="file-browser-listing"></div>
+			<div id="file-browser-error"></div>
+		</div>
+		<div id="file-browser-right">
+			<div class="file-browser-selected-file-info-title">Selected File Info:</div>
+			<div id="file-browser-selected-file-info"></div>
+		</div>
+	</div>
+</body>
+</html>

@@ -164,7 +164,7 @@ namespace KidesServer.Logic
 			return result;
 		}
 
-		private static Task ReadMessageList(IDataReader reader, List<MessageListReadModelRow> data)
+		private static Task ReadMessageList(IDataReader reader, IDbConnection connection, List<MessageListReadModelRow> data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null && reader.FieldCount >= 7)
@@ -236,7 +236,7 @@ namespace KidesServer.Logic
 			return result;
 		}
 
-		private static Task ReadUserInfo(IDataReader reader, UserInfoReadModel data)
+		private static Task ReadUserInfo(IDataReader reader, IDbConnection connection, UserInfoReadModel data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null && reader.FieldCount >= 8)
@@ -258,7 +258,7 @@ namespace KidesServer.Logic
 			return Task.CompletedTask;
 		}
 
-		private static Task ReadUserMessageDensity(IDataReader reader, List<DiscordUserMessageDensity> data)
+		private static Task ReadUserMessageDensity(IDataReader reader, IDbConnection connection, List<DiscordUserMessageDensity> data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null && reader.FieldCount >= 3)
@@ -326,7 +326,7 @@ namespace KidesServer.Logic
 			return results;
 		}
 
-		private static Task ReadRoleList(IDataReader reader, List<DiscordRoleListRow> data)
+		private static Task ReadRoleList(IDataReader reader, IDbConnection connection, List<DiscordRoleListRow> data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null && reader.FieldCount >= 4)
@@ -438,7 +438,7 @@ namespace KidesServer.Logic
 			return result;
 		}
 
-		private static Task ReadEmojiList(IDataReader reader, List<DiscordEmojiListRow> data)
+		private static Task ReadEmojiList(IDataReader reader, IDbConnection connection, List<DiscordEmojiListRow> data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null && reader.FieldCount >= 4)
@@ -719,7 +719,7 @@ namespace KidesServer.Logic
 			return result;
 		}
 
-		private static Task ReadMessagesText(IDataReader reader, List<MessageTextModel> data)
+		private static Task ReadMessagesText(IDataReader reader, IDbConnection connection, List<MessageTextModel> data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null)
@@ -811,7 +811,7 @@ namespace KidesServer.Logic
 			return result;
 		}
 
-		private static Task ReadServerStats(IDataReader reader, List<DiscordStatRow> data)
+		private static Task ReadServerStats(IDataReader reader, IDbConnection connection, List<DiscordStatRow> data)
 		{
 			reader = reader as MySqlDataReader;
 			if (reader != null && reader.FieldCount >= 5)

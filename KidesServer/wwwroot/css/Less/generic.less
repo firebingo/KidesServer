@@ -3,32 +3,54 @@
 @base-bg-color: #393939;
 @base-font-color: rgba(255,255,255,.7);
 @base-border-color: rgba(255,255,255,.2);
+@error-color: rgba(210, 0, 0, .8);
 @base-link-color: #0096cf;
 @fade-in-time: 0.5s;
 
 html {
-	font-size: @base-font-size;
-	font-family: @base-font-family;
-	background-color: @base-bg-color;
-	color: @base-font-color;
-	body {
-		border-color: @base-border-color;
-		a {
-			color: @base-link-color;
-			&:not([href]) {
-				text-decoration: underline;
-				cursor: pointer;
-			}
-		}
-		.hover-span {
-			color: @base-link-color;
-		}
-	}
+    font-size: @base-font-size;
+    font-family: @base-font-family;
+    background-color: @base-bg-color;
+    color: @base-font-color;
+
+    body {
+        border-color: @base-border-color;
+
+        a {
+            color: @base-link-color;
+
+            &:not([href]) {
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        }
+
+        .hover-span {
+            color: @base-link-color;
+        }
+    }
+
+    --base-font-color: @base-font-color;
+    --base-bg-color: @base-bg-color;
+    --base-border-color: @base-border-color;
+    --base-link-color: @base-link-color;
+    --error-color: @error-color;
+    --base-font-size: @base-font-size;
+    --base-font-family: @base-font-family;
+    --scrollbar-background: rgba(45,45,45,1);
+    --scrollbar-thumb: rgba(85,85,85,1);
+    --icon-filter: invert(1);
 }
 
 .fade-in {
-	opacity: 0;
-	transition: opacity @fade-in-time;
+    opacity: 0;
+    transition: opacity @fade-in-time;
 }
 
-.centered { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}

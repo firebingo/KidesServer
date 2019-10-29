@@ -197,6 +197,38 @@ namespace KidesServer.Controllers
 			return BadRequest(res);
 		}
 
+		[HttpGet, Route("get-directory-info")]
+		[Authorize]
+		public ActionResult GetDirectoryInfo([FromQuery]string directory)
+		{
+			var fileUser = AppConfig.Config.FileAccess.People[User.Identity.Name];
+			if (fileUser == null || !fileUser.List)
+				return BadRequest(new BaseResult() { message = "USER_NO_PERMISSIONS", success = false });
+
+			var res = FileLogic.GetDirectoryInfo(fileUser, directory);
+
+			if (res.success)
+				return Ok(res);
+
+			return BadRequest(res);
+		}
+
+		[HttpGet, Route("get-file-info/{fileName}")]
+		[Authorize]
+		public ActionResult GetFileInfo(string fileName, [FromQuery]string directory)
+		{
+			var fileUser = AppConfig.Config.FileAccess.People[User.Identity.Name];
+			if (fileUser == null || !fileUser.List)
+				return BadRequest(new BaseResult() { message = "USER_NO_PERMISSIONS", success = false });
+
+			var res = FileLogic.GetFileInfo(fileUser, fileName, directory);
+
+			if (res.success)
+				return Ok(res);
+
+			return BadRequest(res);
+		}
+
 		private static Encoding GetEncoding(MultipartSection section)
 		{
 			var hasMediaTypeHeader = MediaTypeHeaderValue.TryParse(section.ContentType, out var mediaType);

@@ -19,12 +19,11 @@
       }
     },
     "KidesServer": {
-      "commandName": "IIS",
-      "launchBrowser": true,
+      "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:3001"
+      "applicationUrl": "http://localhost:3001"
     },
     "IIS": {
       "commandName": "IIS"
