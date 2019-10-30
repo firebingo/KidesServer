@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using KidesServer.Models;
 using KidesServer.Logic;
+using ZNetCS.AspNetCore.Authentication.Basic;
 
 namespace KidesServer.Controllers
 {

@@ -7,7 +7,7 @@ namespace KidesServer.Models
 {
 	public static class AuthInfo
 	{
-		public static readonly string LoginAuthScheme = "Cookies";
+		public const string LoginAuthScheme = "Cookies";
 		public static readonly string CookieName = "KidesAuthCookie";
 	}
 

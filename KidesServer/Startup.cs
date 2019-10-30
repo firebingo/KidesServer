@@ -55,43 +55,7 @@ namespace KidesServer
 				};
 			});
 
-			services.AddAuthentication(AuthInfo.LoginAuthScheme)
-				.AddCookie(options =>
-				{
-					options.Events.OnRedirectToLogin = (context) =>
-					{
-						context.Response.StatusCode = 401;
-						return Task.CompletedTask;
-					};
-					options.Events.OnValidatePrincipal = async (context) =>
-					{
-						var username = context.Principal?.Identity?.Name ?? string.Empty;
-						FileControllerPerson user = null;
-						if (!string.IsNullOrWhiteSpace(username) && AppConfig.Config.FileAccess.People.ContainsKey(username.ToLowerInvariant()))
-							user = AppConfig.Config.FileAccess.People[username.ToLowerInvariant()];
-
-						if (user == null && !AppConfig.Config.FileAccess.People.ContainsKey("anon"))
-						{
-							context.RejectPrincipal();
-							await context.HttpContext.SignOutAsync(AuthInfo.LoginAuthScheme);
-							return;
-						}
-						else if (user == null)
-							user = AppConfig.Config.FileAccess.People["anon"];
-
-						if (user.Disabled)
-						{
-							context.RejectPrincipal();
-							await context.HttpContext.SignOutAsync(AuthInfo.LoginAuthScheme);
-							return;
-						}
-
-						return;
-					};
-					options.SlidingExpiration = true;
-					options.ExpireTimeSpan = TimeSpan.FromDays(5);
-					options.Cookie.Name = AuthInfo.CookieName;
-				});
+			AuthHelper.BuildAuthentication(services);
 
 			services.AddMvc()
 				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2)

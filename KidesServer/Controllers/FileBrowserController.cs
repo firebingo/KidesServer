@@ -9,11 +9,15 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KidesServer.Helpers;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace KidesServer.Controllers
 {
+	
 	public class FileBrowserController : Controller
 	{
+		[Authorize]
+		[AllowAnonymous]
 		public IActionResult Root()
 		{
 			if (!User.Identity.IsAuthenticated)
@@ -22,6 +26,8 @@ namespace KidesServer.Controllers
 			return View();
 		}
 
+		[Authorize]
+		[AllowAnonymous]
 		public IActionResult Login()
 		{
 			if (User.Identity.IsAuthenticated)
