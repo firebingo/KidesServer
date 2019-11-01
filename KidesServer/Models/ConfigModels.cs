@@ -50,8 +50,10 @@ namespace KidesServer.Models
 		public string Username = "";
 		public string Password = "";
 		public bool NeedsPasswordHashed = true;
+		public DateTime PasswordChangedUtc = DateTime.MinValue;
 		public string HashSalt = "";
 		public bool Disabled = false;
+		public DateTime LastLoginUtc = DateTime.MinValue;
 		public bool Upload = false;
 		public bool Download = true;
 		public bool List = false;
@@ -98,6 +100,14 @@ namespace KidesServer.Models
 			if (Password == builder.ToString())
 				return true;
 			return false;
+		}
+
+		public void ChangePassword(string newPassword)
+		{
+			Password = newPassword;
+			NeedsPasswordHashed = true;
+			PasswordChangedUtc = DateTime.UtcNow;
+			CheckPasswordHash();
 		}
 	}
 }

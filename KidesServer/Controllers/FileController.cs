@@ -168,9 +168,9 @@ namespace KidesServer.Controllers
 			return BadRequest(res);
 		}
 
-		[HttpDelete, Route("delete-file")]
+		[HttpDelete, Route("delete-file/{fileName}")]
 		[Authorize]
-		public ActionResult DeleteFile([FromQuery]string fileName, [FromQuery]string directory)
+		public ActionResult DeleteFile(string fileName, [FromQuery]string directory)
 		{
 			var fileUser = AppConfig.Config.FileAccess.People[User.Identity.Name];
 			if (fileUser == null || !fileUser.Delete)

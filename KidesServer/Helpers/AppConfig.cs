@@ -3,6 +3,7 @@ using KidesServer.Models;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace KidesServer
 {
@@ -30,18 +31,25 @@ namespace KidesServer
 			{
 				try
 				{
+					bool saveConfig = false;
 					lock (cfgLock)
 					{
 						if (_config == null)
+						{
 							_config = JsonConvert.DeserializeObject<ConfigModel>(File.ReadAllText($"{folderLocation}\\Config.json"));
+							_config.FileAccess.CheckPasswordHashes();
+							saveConfig = true;
+						}
 					}
-					_config.FileAccess.CheckPasswordHashes();
-					SaveConfig();
+					
+					if(saveConfig)
+						SaveConfig();
+
 					return _config;
 				}
 				catch (Exception e)
 				{
-					ErrorLog.WriteLog(e.Message);
+					ErrorLog.WriteError(e);
 					return null;
 				}
 			}
@@ -53,11 +61,16 @@ namespace KidesServer
 			{
 				lock (cfgLock)
 				{
+					//Why would we need to load and resave the config if it wasnt loaded in the first place to have changes?
 					if (_config == null)
-						_config = JsonConvert.DeserializeObject<ConfigModel>(File.ReadAllText($"{folderLocation}\\Config.json"));
+						return;
+					//if (_config == null)
+					//	_config = JsonConvert.DeserializeObject<ConfigModel>(File.ReadAllText($"{folderLocation}\\Config.json"));
 					var cfg = JsonConvert.SerializeObject(_config, Formatting.Indented);
-					if(!string.IsNullOrWhiteSpace(cfg))
+					if (!string.IsNullOrWhiteSpace(cfg))
 						File.WriteAllText($"{folderLocation}\\Config.json", cfg);
+					else
+						ErrorLog.WriteLog("Serialization of config is empty, not saving");
 				}
 			}
 			catch (Exception e)

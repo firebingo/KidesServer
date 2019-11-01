@@ -67,7 +67,7 @@ namespace KidesServer
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+		public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
 		{
 			if (env.IsDevelopment())
 			{
@@ -103,6 +103,13 @@ namespace KidesServer
 					name: "KidesApi",
 					template: "api/{controller}/{id}");
 			});
+
+			applicationLifetime.ApplicationStopping.Register(OnShutdown);
+		}
+
+		public void OnShutdown()
+		{
+			AppConfig.SaveConfig();
 		}
 	}
 }

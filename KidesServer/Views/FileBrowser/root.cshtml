@@ -15,18 +15,25 @@
 	<script src="../Js/fileBrowser.min.js" type="application/javascript" charset="UTF-8"></script>
 	<div id="loading-parent" class="centered">Loading...</div>
 	<div id="fade-parent" class="fade-in">
-		<div id="file-browser-left">
-			<div id="file-browser-current-directory">
-				<span>Directory:</span>
-				<input id="file-browser-current-directory-input" type="text" autocomplete="off" />
-			</div>
-			<div id="file-browser-listing"></div>
-			<div id="file-browser-error"></div>
+		<div id="browser-top-bar">
+			<div id="browser-user-info" onclick="userSettingClick(event)">User: @User.Identity.Name <a>⚙</a></div>
 		</div>
-		<div id="file-browser-right">
-			<div class="file-browser-selected-file-info-title">Selected File Info:</div>
-			<div id="file-browser-selected-file-info"></div>
+		<div id="browser-parent">
+			<div id="file-browser-left">
+				<div style="display: none;" id="file-browser-current-directory">
+					<span>Directory:</span>
+					<input id="file-browser-current-directory-input" type="text" autocomplete="off" />
+				</div>
+				<div id="file-browser-listing"></div>
+				<div id="file-browser-error"></div>
+			</div>
+			<div id="file-browser-right">
+				<div class="file-browser-selected-file-info-title">Selected File Info:</div>
+				<div id="file-browser-selected-file-info"></div>
+			</div>
 		</div>
 	</div>
+	<div id="click-catcher" style="display: none;" onclick="closeModal(event, false)"></div>
+	<div id="modal-container" style="display: none;"></div>
 </body>
 </html>

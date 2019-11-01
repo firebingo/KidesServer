@@ -84,14 +84,15 @@ namespace KidesServer.Helpers
 								if (user != null && !user.Disabled && user.CheckPassword(context.Password))
 								{
 									var claims = new List<Claim>
-								{
+									{
 									new Claim(ClaimTypes.Name,
 											  string.IsNullOrWhiteSpace(context.UserName) ? "anon" : context.UserName,
 											  context.Options.ClaimsIssuer)
-								};
+									};
 
 									var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, BasicAuthenticationDefaults.AuthenticationScheme));
 									context.Principal = principal;
+									user.LastLoginUtc = DateTime.UtcNow;
 
 									return Task.CompletedTask;
 								}

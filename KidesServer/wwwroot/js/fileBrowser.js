@@ -68,6 +68,17 @@ let selectedFileInfo = {
     lastModifiedUtc: new Date()
 };
 
+let userInfo = {
+    username: '',
+    lastLoginUtc: new Date(),
+    lastPasswordChangedUtc: new Date()
+};
+
+let modalElement = undefined;
+let clickCatchElement = undefined;
+let modalCallback = undefined;
+let modalCallbackData = undefined;
+
 function onBrowserBodyLoaded() {
     getBodyElements();
     loadBrowser();
@@ -79,10 +90,14 @@ function getBodyElements() {
     browserListingElement = document.getElementById("file-browser-listing");
     browserListingErrorElement = document.getElementById("file-browser-error");
     selectedFileInfoElement = document.getElementById("file-browser-selected-file-info");
+    modalElement = document.getElementById("modal-container");
+    clickCatchElement = document.getElementById("click-catcher");
 }
 
 async function loadBrowser() {
-    await loadDirectory("\\");
+    const load = [loadDirectory("\\"), loadUserInfo()];
+    await Promise.all(load);
+    setPageInfo();
     document.getElementById("loading-parent").style.cssText = "opacity: 0; pointer-events: none;";
     document.getElementById("fade-parent").style.cssText = "opacity: 1;";
 }
@@ -107,6 +122,27 @@ async function loadDirectory(path) {
     }
 
     setPageInfo();
+}
+
+async function loadUserInfo() {
+    try {
+        const res = await fetch(`api/v1/account/user-info`, {
+            method: 'GET',
+            cache: 'no-cache'
+        });
+        const json = await res.json();
+        if (res.ok && json.success) {
+            userInfo = {
+                username: json.username,
+                lastLoginUtc: moment(json.lastLoginUtc),
+                lastPasswordChangedUtc: moment(json.lastPasswordChangedUtc)
+            };
+        } else {
+            browserListingError = `An api error has occured: ${json.message}`;
+        }
+    } catch (ex) {
+        browserListingError = `A exception has occured: ${ex.message}`;
+    }
 }
 
 async function getDirectoryInfo(path) {
@@ -287,11 +323,17 @@ function buildSelectedFileInfo() {
     if (!selectedFileInfo.isDirectory) {
         selectedFileInfoHtml += `
 <div class="selected-file-info-item">
-    <a class="selected-file-info-download" href="api/v1/files/get-file/${selectedFileInfo.name}?directory=${selectedFileInfo.path.replace(selectedFileInfo.name, "")}" download>
+    <a class="selected-file-info-download selected-file-info-button" href="api/v1/files/get-file/${selectedFileInfo.name}?directory=${selectedFileInfo.path.replace(selectedFileInfo.name, "")}" download>
         <button>download</button>
     </a>
 </div>`;
     }
+
+    selectedFileInfoHtml += `
+<div class="selected-file-info-item">
+    <button class="selected-file-info-button" onClick=onDeleteFileClicked(event)>delete</button>
+</div>
+`;
 
     selectedFileInfoHtml += '</div>';
 }
@@ -346,6 +388,257 @@ function onItemNameClicked(ev) {
     }
 }
 
+function onDeleteFileClicked(ev) {
+    if (!selectedFileInfo.path || selectedFileInfo.path == "\\")
+        return;
+
+    const html = `
+<div class="modal confirm-modal">
+    <div style="max-height: 500px;">Are you sure you want to delete the ${selectedFileInfo.isDirectory ? 'directory' : 'file'} "${selectedFileInfo.path}"?</div>
+    <div id="modal-buttons">
+		<button onclick="closeModal(event, false)">Cancel</button>
+		<button onclick="closeModal(event, true)">Delete</button>
+	</div>
+</div>`;
+
+    openModal(html, deleteFileConfirm);
+}
+
+function deleteFileConfirm(ev) {
+    if (selectedFileInfo.isDirectory) {
+        deleteFolder();
+    } else {
+        deleteFile();
+    }
+}
+
+async function deleteFile() {
+    try {
+        const path = selectedFileInfo.path;
+        const name = selectedFileInfo.name;
+        let parent = _.initial(path.split("\\")).join("\\");
+        if (parent === "") { parent = "\\" }
+
+        const res = await fetch(`api/v1/files/delete-file/${name}?directory=${parent.replace('/', '\\')}`, {
+            method: 'DELETE',
+            cache: 'no-cache'
+        });
+        const json = await res.json();
+
+        if (res.ok && json.success) {
+            const index = _.findIndex(browserListingDirectories[parent].files, (x) => { return x.name === name });
+            browserListingDirectories[parent].files.splice(index, 1);
+
+            selectedFileInfo = {
+                path: '',
+                name: '',
+                fileSizeBytes: 0,
+                isDirectory: false,
+                createdUtc: new Date(),
+                lastModifiedUtc: new Date()
+            };
+            buildDirectoryListing();
+            buildSelectedFileInfo();
+        } else {
+            browserListingError = `An api error has occured: ${json.message}`;
+        }
+    } catch (ex) {
+        browserListingError = `A exception has occured: ${ex.message}`;
+    }
+
+    setPageInfo();
+}
+
+async function deleteFolder() {
+    try {
+        const path = selectedFileInfo.path;
+        const name = selectedFileInfo.name;
+        let parent = _.initial(path.split("\\")).join("\\");
+        if (parent === "") { parent = "\\" }
+
+        const res = await fetch(`api/v1/files/delete-directory?directory=${path.replace('/', '\\')}`, {
+            method: 'DELETE',
+            cache: 'no-cache'
+        });
+        const json = await res.json();
+
+        if (res.ok && json.success) {
+            delete browserListingDirectories[path];
+            browserListingDirectories[parent].children = _.without(browserListingDirectories[parent].children, name);
+            const index = _.findIndex(browserListingDirectories[parent].directories, (x) => { return x.path === path });
+            browserListingDirectories[parent].directories.splice(index, 1);
+
+            selectedFileInfo = {
+                path: '',
+                name: '',
+                fileSizeBytes: 0,
+                isDirectory: false,
+                createdUtc: new Date(),
+                lastModifiedUtc: new Date()
+            };
+            buildDirectoryListing();
+            buildSelectedFileInfo();
+        } else {
+            browserListingError = `An api error has occured: ${json.message}`;
+        }
+    } catch (ex) {
+        browserListingError = `A exception has occured: ${ex.message}`;
+    }
+
+    setPageInfo();
+}
+
+function userSettingClick(ev) {
+    ev.preventDefault();
+    let html = `
+<div class="modal user-info-modal">
+    <div>
+        <div style="text-align: center;">User Info:</div>
+        <div>Username: ${userInfo.username}</div>
+        <div>Last login: ${userInfo.lastLoginUtc.format('MMM Do YYYY, h:mm a')}</div>
+        <div>Last password change: ${userInfo.lastPasswordChangedUtc.format('MMM Do YYYY, h:mm a')}</div>
+    </div>
+    <div id="modal-buttons">
+		<button onclick="closeModal(event, false)">Close</button>
+        <div>
+            <button onclick="closeModal(event, true, 'changepass')">Change Password</button>
+            <button onclick="closeModal(event, true, 'signout')">Sign Out</button>
+        </div>
+	</div>
+</div>`;
+    openModal(html, userSettingOptionClick);
+}
+
+function userSettingOptionClick(ev, data) {
+    switch (data) {
+        case 'changepass':
+            setTimeout(() => {
+                openChangePasswordModal(ev);
+            });
+            break;
+        case 'signout':
+            signOut();
+            break;
+    }
+}
+
+function openChangePasswordModal(ev) {
+    let html = `
+<div class="modal change-password-modal">
+    <div class="change-password-inputs">
+        <input type="password" id="change-current-password" onblur="onChangePasswordFieldChange(event)" oninput="onChangePasswordFieldChange(event)" placeholder="Current Password"/>
+        <input type="password" id="change-new-password" onblur="onChangePasswordFieldChange(event)" oninput="onChangePasswordFieldChange(event)" placeholder="New Password"/>
+        <input type="password" id="change-confirm-password" onblur="onChangePasswordFieldChange(event)" oninput="onChangePasswordFieldChange(event)" placeholder="Confirm Password"/>
+    </div>
+    <div id="modal-buttons">
+		<button onclick="closeModal(event, false)">Cancel</button>
+        <button id="change-confirm-button" onclick="closeChangePasswordModal(event)" disabled>Confirm</button>
+	</div>
+</div>`;
+    openModal(html);
+}
+
+function onChangePasswordFieldChange(ev) {
+    const current = document.getElementById("change-current-password");
+    const newp = document.getElementById("change-new-password");
+    const confirm = document.getElementById("change-confirm-password");
+    const button = document.getElementById("change-confirm-button");
+
+    if (!current.value || !newp.value || !confirm.value) {
+        button.setAttribute("disabled", "true");
+        return;
+    }
+
+    if (newp.value !== confirm.value || current.value === newp.value) {
+        button.setAttribute("disabled", "true");
+        return;
+    }
+
+    button.removeAttribute("disabled");
+}
+
+function closeChangePasswordModal(ev) {
+    let passwordData = {
+        currentPassword: "",
+        newPassword: ""
+    };
+
+    const current = document.getElementById("change-current-password");
+    const newp = document.getElementById("change-new-password");
+    const confirm = document.getElementById("change-confirm-password");
+    if (!current.value || !newp.value || !confirm.value) {
+        return;
+    }
+
+    if (newp.value !== confirm.value || current.value === newp.value) {
+        return;
+    }
+
+    passwordData.currentPassword = current.value;
+    passwordData.newPassword = newp.value;
+
+    changePassword(ev, passwordData);
+}
+
+async function changePassword(ev, data) {
+    browserListingError = "";
+    try {
+        const res = await fetch("api/v1/account/change-password", {
+            method: 'POST',
+            cache: 'no-cache',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        const json = await res.json();
+        if (res.ok && json.success) {
+            closeModal(ev, false);
+        } else {
+            browserListingError = `An api error has occured: ${json.message}`;
+        }
+    } catch (ex) {
+        browserListingError = `A exception has occured: ${ex.message}`;
+    }
+
+    setPageInfo();
+}
+
+async function signOut() {
+    const res = await fetch("api/v1/account/logout", {
+        method: 'POST',
+        cache: 'no-cache'
+    });
+
+    location.reload();
+}
+
+function openModal(html, callback, data) {
+    modalCallback = callback;
+    modalCallbackData = data;
+    modalElement.innerHTML = html;
+    clickCatchElement.style.cssText = 'display: flex;';
+    modalElement.style.cssText = 'display: flex;';
+}
+
+function closeModal(ev, result, data) {
+    ev.preventDefault();
+    if (result && modalCallback && typeof (modalCallback) === "function") {
+        if (data) {
+            modalCallbackData = data;
+        }
+        modalCallback(ev, modalCallbackData);
+    }
+
+    modalCallback = undefined;
+    modalCallbackData = undefined;
+
+    clickCatchElement.style.cssText = 'display: none;';
+    modalElement.style.cssText = 'display: none;';
+    modalElement.innerHTML = '';
+}
+
 //endregion Browser
 
 function fileSizeBytesToFriendlyString(bytes) {
@@ -359,4 +652,3 @@ function fileSizeBytesToFriendlyString(bytes) {
         return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} (GiB)`;
     }
 }
-

@@ -208,7 +208,7 @@ namespace KidesServer.Logic
 			{
 				var res = new BaseResult();
 
-				if (string.IsNullOrWhiteSpace(directory) || directory == "\\")
+				if (string.IsNullOrWhiteSpace(directory) || directory == "\\" || directory == "/")
 					return new BaseResult() { success = false, message = "CANNOT_DELETE_ROOT" };
 
 				var (permission, subPermission) = CheckDirectoryPermission(user, directory);
