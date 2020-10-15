@@ -10,7 +10,7 @@ namespace KidesServer.Controllers
 {
 	public class HomeController : Controller
 	{
-		public IActionResult Root()
+		public IActionResult Index()
 		{
 			return View();
 		}

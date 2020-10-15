@@ -60,11 +60,9 @@ namespace KidesServer.Controllers
 				{
 					if (MultipartRequestHelper.HasFileContentDisposition(contentDisposition))
 					{
-						targetFilePath = $"{AppDomain.CurrentDomain.GetData("DataDirectory").ToString()}\\Temp\\{Guid.NewGuid().ToString("n")}";
-						using (var targetStream = System.IO.File.Create(targetFilePath))
-						{
-							await section.Body.CopyToAsync(targetStream);
-						}
+						targetFilePath = $"{AppDomain.CurrentDomain.GetData("DataDirectory")}\\Temp\\{Guid.NewGuid():n}";
+						using var targetStream = System.IO.File.Create(targetFilePath);
+						await section.Body.CopyToAsync(targetStream);
 					}
 					else if (MultipartRequestHelper.HasFormDataContentDisposition(contentDisposition))
 					{
@@ -76,25 +74,24 @@ namespace KidesServer.Controllers
 						// multipart headers length limit is already in effect.
 						var key = HeaderUtilities.RemoveQuotes(contentDisposition.Name).ToString();
 						var encoding = GetEncoding(section);
-						using (var streamReader = new StreamReader(
+						using var streamReader = new StreamReader(
 							section.Body,
 							encoding,
 							detectEncodingFromByteOrderMarks: true,
 							bufferSize: 1024,
-							leaveOpen: true))
-						{
-							// The value length limit is enforced by MultipartBodyLengthLimit
-							var value = await streamReader.ReadToEndAsync();
-							if (String.Equals(value, "undefined", StringComparison.OrdinalIgnoreCase))
-							{
-								value = String.Empty;
-							}
-							formAccumulator.Append(key, value);
+							leaveOpen: true);
 
-							if (formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
-							{
-								throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
-							}
+						// The value length limit is enforced by MultipartBodyLengthLimit
+						var value = await streamReader.ReadToEndAsync();
+						if (string.Equals(value, "undefined", StringComparison.OrdinalIgnoreCase))
+						{
+							value = string.Empty;
+						}
+						formAccumulator.Append(key, value);
+
+						if (formAccumulator.ValueCount > _defaultFormOptions.ValueCountLimit)
+						{
+							throw new InvalidDataException($"Form key count limit {_defaultFormOptions.ValueCountLimit} exceeded.");
 						}
 					}
 				}

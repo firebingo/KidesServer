@@ -6,6 +6,7 @@ using KidesServer.Models;
 using System.Net.Http.Headers;
 using System.IO;
 using KidesServer.Helpers;
+using Newtonsoft.Json;
 
 namespace KidesServer.Logic
 {
@@ -56,15 +57,12 @@ namespace KidesServer.Logic
 			{
 				try
 				{
-					var dataObjects = response.Content.ReadAsAsync<WotBasicUser>().Result;
+					var content = await response.Content.ReadAsStringAsync();
+					var dataObjects = JsonConvert.DeserializeObject<WotBasicUser>(content);
 					if (dataObjects != null)
-					{
 						return dataObjects;
-					}
 					else
-					{
 						return null;
-					}
 				}
 				catch (Exception e)
 				{
@@ -78,28 +76,29 @@ namespace KidesServer.Logic
 			}
 		}
 
-		public static Task<WotUserInfo> CallDataAPI(string accoundId, string accessToken, string region)
+		public static async Task<WotUserInfo> CallDataAPI(string accoundId, string accessToken, string region)
 		{
 			HttpResponseMessage response = _client.GetAsync($"{userDataUrls[region]}?application_id={appId}&account_id={accoundId}{(accessToken != null ? $"&access_token={accessToken}" : "")}").Result;
 			if (response.IsSuccessStatusCode)
 			{
 				try
 				{
-					var dataObjects = response.Content.ReadAsAsync<WotUserInfo>().Result;
+					var content = await response.Content.ReadAsStringAsync();
+					var dataObjects = JsonConvert.DeserializeObject<WotUserInfo>(content);
 					if (dataObjects != null)
-						return Task.FromResult(dataObjects);
+						return dataObjects;
 					else
-						return Task.FromResult<WotUserInfo>(null);
+						return null;
 				}
 				catch (Exception e)
 				{
 					ErrorLog.WriteLog(e.Message);
-					return Task.FromResult<WotUserInfo>(null);
+					return null;
 				}
 			}
 			else
 			{
-				return Task.FromResult<WotUserInfo>(null);
+				return null;
 			}
 		}
 	}

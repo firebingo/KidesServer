@@ -275,18 +275,6 @@ namespace KidesServer.Logic
 			}
 			return Task.CompletedTask;
 		}
-
-		private static string MessageListSortOrderToParam(MessageSort sort, bool isDesc)
-		{
-			switch (sort)
-			{
-				default:
-				case MessageSort.messageCount:
-					return $"mainquery.rank {(isDesc ? "ASC" : "DESC")}";
-				case MessageSort.userName:
-					return $"COALESCE(mainquery.nickName, mainquery.userName) {(isDesc ? "DESC" : "ASC")}";
-			}
-		}
 		#endregion
 
 		#region role list
@@ -457,36 +445,14 @@ namespace KidesServer.Logic
 			return Task.CompletedTask;
 		}
 
-		private static bool DoesImageGifExist(string url)
-		{
-			HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
-			request.Timeout = 750;
-			request.Method = "HEAD";
-			request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
-			request.Headers.Add("accept-encoding", "gzip, deflate, br");
-			try
-			{
-				using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-				{
-					return (response.StatusCode == HttpStatusCode.OK);
-				}
-			}
-			catch
-			{
-				return false;
-			}
-		}
-
 		private static string EmojiListSortOrderToParam(EmojiSort sort, bool isDesc)
 		{
-			switch (sort)
+			return sort switch
 			{
-				default:
-				case EmojiSort.emojiCount:
-					return $"mainquery.rank {(isDesc ? "ASC" : "DESC")}";
-				case EmojiSort.emojiName:
-					return $"mainquery.emojiName {(isDesc ? "DESC" : "ASC")}";
-			}
+				EmojiSort.emojiCount => $"mainquery.rank {(isDesc ? "ASC" : "DESC")}",
+				EmojiSort.emojiName => $"mainquery.emojiName {(isDesc ? "DESC" : "ASC")}",
+				_ => ""
+			};
 		}
 		#endregion
 
@@ -508,9 +474,9 @@ namespace KidesServer.Logic
 			var ignoreChars = new List<char>() { '`', '~', '$', '%', '^', '|', '+', '=', '<', '>', '\n', '\r', '\t', '\b', '\v', '\a', '\0', 'ﾟ', 'ˆ', 'ᵃ', 'ｰ', 'ー', 'ˈ', 'ː' };
 			var parOpts = new ParallelOptions() { MaxDegreeOfParallelism = Environment.ProcessorCount / 2 };
 
-			var wordsCached = GeneralCache.ContainsCacheObject("MessageTextCache", $"WordsList:{(input.startDate.HasValue ? input.startDate.Value.Ticks.ToString() : "_")}:{input.englishOnly.ToString()}");
+			var wordsCached = GeneralCache.ContainsCacheObject("MessageTextCache", $"WordsList:{(input.startDate.HasValue ? input.startDate.Value.Ticks.ToString() : "_")}:{input.englishOnly}");
 			if (wordsCached)
-				words = GeneralCache.GetCacheObject("MessageTextCache", $"WordsList:{(input.startDate.HasValue ? input.startDate.Value.Ticks.ToString() : "_")}:{input.englishOnly.ToString()}") as ConcurrentDictionary<string, ConcurrentDictionary<ulong, int>>;
+				words = GeneralCache.GetCacheObject("MessageTextCache", $"WordsList:{(input.startDate.HasValue ? input.startDate.Value.Ticks.ToString() : "_")}:{input.englishOnly}") as ConcurrentDictionary<string, ConcurrentDictionary<ulong, int>>;
 
 			if (words == null)
 			{
@@ -536,13 +502,13 @@ namespace KidesServer.Logic
 					//remove empty entries.
 					split = split.Where(x => x.Trim() != string.Empty).ToArray();
 					//if the word is just a string of the same characters
-					split = split.Where(x => (x.Length > 3 ? x.Distinct().Count() > 1 : true)).ToArray();
+					split = split.Where(x => (x.Length <= 3 || x.Distinct().Count() > 1)).ToArray();
 					//remove long words that are just 2 characters
-					split = split.Where(x => (x.Length > 6 ? x.Distinct().Count() > 2 : true)).ToArray();
+					split = split.Where(x => (x.Length <= 6 || x.Distinct().Count() > 2)).ToArray();
 					//remove longer words that are just 3 characters
-					split = split.Where(x => (x.Length >= 10 ? x.Distinct().Count() > 3 : true)).ToArray();
+					split = split.Where(x => (x.Length < 10 || x.Distinct().Count() > 3)).ToArray();
 					//this is getting dumb
-					split = split.Where(x => (x.Length > 50 ? x.Distinct().Count() > 4 : true)).ToArray();
+					split = split.Where(x => (x.Length <= 50 || x.Distinct().Count() > 4)).ToArray();
 					//lets put a "reasonable" cap on this
 					split = split.Where(x => x.Length <= 125).ToArray();
 					for (var i = 0; i < split.Length; ++i)
@@ -564,7 +530,7 @@ namespace KidesServer.Logic
 			}
 
 			if (!wordsCached)
-				GeneralCache.NewCacheObject("MessageTextCache", $"WordsList:{(input.startDate.HasValue ? input.startDate.Value.Ticks.ToString() : "_")}:{input.englishOnly.ToString()}", words, new TimeSpan(12, 0, 0));
+				GeneralCache.NewCacheObject("MessageTextCache", $"WordsList:{(input.startDate.HasValue ? input.startDate.Value.Ticks.ToString() : "_")}:{input.englishOnly}", words, new TimeSpan(12, 0, 0));
 
 			//Generate total row
 			DiscordWordListRow totalRow = null;

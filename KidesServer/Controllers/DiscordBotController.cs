@@ -1,6 +1,4 @@
 ﻿using System.Net;
-using System.Net.Http;
-using System.Web.Http;
 using KidesServer.Models;
 using KidesServer.Logic;
 using System.Threading.Tasks;
