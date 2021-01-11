@@ -8,21 +8,16 @@ var songStatArea = document.getElementById("song-stats-area");
 var songStatPlaceholder = document.getElementById("song-stats-placeholder");
 var songInfoArea = document.getElementById("song-info-area");
 
-function getJSON(url, callback, errorCallback, data) {
-	$.ajax({
-		dataType : "json",
-		url : url,
-		data : data,
-		success : callback,
-		error : errorCallback
-	});
+async function getJSON(url) {
+	const res = await fetch(url);
+	return await res.json();
 };
 
 function buildSongList() {
 	songCountArea = songCountArea ? songCountArea : document.getElementById("song-count-area");
 	songListArea = songListArea ? songListArea : document.getElementById("song-list-area");
 	songInfoArea = songInfoArea ? songInfoArea : document.getElementById("song-info-area");
-	if(songCountArea) {
+	if (songCountArea) {
 		var element = document.createElement('div');
 		element.id = 'song-counts';
 		var songCountTemplate = '\
@@ -31,7 +26,7 @@ function buildSongList() {
 		element.innerHTML = songCountTemplate;
 		songCountArea.appendChild(element);
 	}
-	if(songListArea) {
+	if (songListArea) {
 		var element = document.createElement('div');
 		element.id = 'song-list';
 		var songListTemplate = '';
@@ -59,22 +54,22 @@ function buildSongList() {
 		}
 		element.innerHTML = songListTemplate;
 		songListArea.appendChild(element);
-		$(songInfoArea).css('opacity', 1);
+		songInfoArea.style.opacity = 1;
 	}
 };
 //<span>Kana: ' + songList[j].Hiragana + '</span>\
 
-buildSongStats = function() {
+buildSongStats = function () {
 	songStatArea = songStatArea ? songStatArea : document.getElementById("song-stats-area");
 	songStatPlaceholder = songStatPlaceholder ? songStatPlaceholder : document.getElementById("song-stats-placeholder");
-	if(songStatArea) {
+	if (songStatArea) {
 		var element = document.createElement('div');
 		element.id = 'song-stats';
-		var songStatTemplate = 
-		'<table class="song-stat-table">\
+		var songStatTemplate =
+			'<table class="song-stat-table">\
 			<tbody>';
-		for(var i = 0; i < songStats.length; ++i) {
-			songStatTemplate += 
+		for (var i = 0; i < songStats.length; ++i) {
+			songStatTemplate +=
 				'<tr>\
 					<td class="stat-left-cell">' + songStats[i].title + '</td>\
 					<td>' + songStats[i].value + '</td>\
@@ -86,34 +81,44 @@ buildSongStats = function() {
 		element.innerHTML = songStatTemplate;
 		songStatPlaceholder.innerHTML = "";
 		songStatArea.appendChild(element);
-		$(songStatArea).css('opacity', 1);
+		songStatArea.style.opacity = 1;
 	}
 };
 
-function setSongList(resp) {
-	songList = resp.songList;
-	albumList = resp.albumList;
+function setSongList(res) {
+	songList = res.songList;
+	albumList = res.albumList;
 	buildSongList();
 };
-function songListFailure(resp) {};
+function songListFailure(res) { };
 
-function setSongStats(resp) {
-	tempSongStats = resp.songCounts;
+function setSongStats(res) {
+	tempSongStats = res.songCounts;
 	songStats = [];
 	var keys = Object.keys(tempSongStats);
-	for(var i = 0; i < keys.length; ++i) {
-		songStats.push({title: keys[i], value: tempSongStats[keys[i]]});
+	for (var i = 0; i < keys.length; ++i) {
+		songStats.push({ title: keys[i], value: tempSongStats[keys[i]] });
 	}
-	songStats.sort(function(a, b) { 
-		if(a.value < b.value)
+	songStats.sort(function (a, b) {
+		if (a.value < b.value)
 			return 1;
-		if(a.value > b.value)
+		if (a.value > b.value)
 			return -1;
 		return 0;
 	});
 	buildSongStats();
 };
-function songStatsFailure(resp) {};
+function songStatsFailure(resp) { };
 
-getJSON("/Js/SongList.min.json", setSongList, songListFailure, '');
+async function startLoad() {
+	try {
+		const res = await getJSON("/Js/SongList.min.json");
+		setSongList(res);
+	} catch (ex) {
+		console.log(ex);
+		songListFailure(ex);
+	}
+}
+
+startLoad();
 //getJSON("https://server.icebingo.io:25563/api/v1/song-stats", setSongStats, songStatsFailure, '');

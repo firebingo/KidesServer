@@ -33,7 +33,7 @@ namespace KidesServer.Controllers
 			catch (Exception e)
 			{
 				ErrorLog.WriteLog(e.Message);
-				return StatusCode(500, e.Message);
+				return StatusCode(500, new WotUserInfo() { status = "error", error = new WotError() { message = e.Message } });
 			}
 			if (userInfo != null && userInfo.data != null)
 			{
@@ -66,7 +66,7 @@ namespace KidesServer.Controllers
 			if (success)
 				return Ok(data);
 			else
-				return BadRequest(message);
+				return BadRequest(new WotUserInfo() { status="error", error = new WotError() { message = message } });
 		}
 	}
 }

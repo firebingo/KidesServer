@@ -52,57 +52,63 @@ var playerSearchInput = undefined;
 var playerTokenInput = undefined;
 var playerSearchError = undefined;
 var playerRegionDropdown = undefined;
-var baseUrl = window.location.href.split('/');
-baseUrl.length = 3;
-baseUrl = baseUrl.join('/');
 
-function getJSON(url, callback, errorCallback, data) {
-	$.ajax({
-		dataType : "json",
-		url : url,
-		data : data,
-		success : callback,
-		error : errorCallback
-	});
+async function getJSON(url) {
+	const res = await fetch(url);
+	return await res.json();
 };
 
-function setTankList(resp) {
-	tankList = resp;
+function setTankList(res) {
+	tankList = res;
 };
-function tankListFailure(resp) {
-	
+
+function tankListFailure(res) {
+
 };
-getJSON(baseUrl + "/Js/wotTankList.min.json", setTankList, tankListFailure, '');
+
+async function startLoad() {
+	try {
+		const res = await getJSON(`/Js/wotTankList.min.json`);
+		setTankList(res);
+	}
+	catch (ex) {
+		console.log(ex);
+		tankListFailure(ex);
+	}
+}
+
+startLoad();
+
 
 function hideSection(section) {
 	switch (section) {
-	case 'guide':
-		if (mapContainer) {
-			if (mapContainer.style.display === 'none') {
-				mapContainer.style.display = 'flex';
-			} else {
-				mapContainer.style.display = 'none';
+		case 'guide':
+			if (mapContainer) {
+				if (mapContainer.style.display === 'none') {
+					mapContainer.style.display = 'flex';
+				} else {
+					mapContainer.style.display = 'none';
+				}
 			}
-		}
-		break;
-	case 'previews':
-		if (imagePreviews) {
-			if (imagePreviews.style.display === 'none') {
-				imagePreviews.style.display = 'flex';
-			} else {
-				imagePreviews.style.display = 'none';
+			break;
+		case 'previews':
+			if (imagePreviews) {
+				if (imagePreviews.style.display === 'none') {
+					imagePreviews.style.display = 'flex';
+				} else {
+					imagePreviews.style.display = 'none';
+				}
 			}
-		}
-		break;
+			break;
 		case 'player':
-		if (playerContainer) {
-			if (playerContainer.style.display === 'none') {
-				playerContainer.style.display = 'flex';
-			} else {
-				playerContainer.style.display = 'none';
+			if (playerContainer) {
+				if (playerContainer.style.display === 'none') {
+					playerContainer.style.display = 'flex';
+				} else {
+					playerContainer.style.display = 'none';
+				}
 			}
-		}
-		break;
+			break;
 	}
 };
 
@@ -120,12 +126,12 @@ function buildUserData(data) {
 	var data = data[keys[0]];
 	var tankKills = undefined;
 	var mostKilled = undefined;
-	if(data.statistics.frags) {
+	if (data.statistics.frags) {
 		tankKills = data.statistics.frags;
 		var tankKeys = Object.keys(tankKills);
-		mostKilled = {id: 0, value: 0}
-		tankKeys.forEach(function(value, index) {
-			if(tankKills[value] > mostKilled.value) {
+		mostKilled = { id: 0, value: 0 }
+		tankKeys.forEach(function (value, index) {
+			if (tankKills[value] > mostKilled.value) {
 				mostKilled.id = value;
 				mostKilled.value = tankKills[value];
 			}
@@ -140,24 +146,24 @@ function buildUserData(data) {
 		<tbody>\
 			<tr><td class="ac-left-cell"><span>Nickname:  </span></td><td class="ac-right-cell"><span>' + data.nickname + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Account Id:	</span></td><td class="ac-right-cell"><span>' + data.account_id + '</span></td></tr>\
-			<tr><td class="ac-left-cell"><span>Created Date:  </span></td><td class="ac-right-cell"><span>' + new Date(data.created_at*1000).toString() + '</span></td></tr>\
+			<tr><td class="ac-left-cell"><span>Created Date:  </span></td><td class="ac-right-cell"><span>' + new Date(data.created_at * 1000).toString() + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Personal Rating:	 </span></td><td class="ac-right-cell"><span>' + data.global_rating + '</span></td></tr>\
-			<tr><td class="ac-left-cell"><span>Last Battle:	 </span></td><td class="ac-right-cell"><span>' + new Date(data.last_battle_time*1000).toString() + '</span></td></tr>' +
-			(data.private ? 
+			<tr><td class="ac-left-cell"><span>Last Battle:	 </span></td><td class="ac-right-cell"><span>' + new Date(data.last_battle_time * 1000).toString() + '</span></td></tr>' +
+		(data.private ?
 			'<tr><td colspan="2" class="ac-single-cell"><span>Private Data (Requires Access Token):</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Credits:	 </span></td><td class="ac-right-cell"><span>' + data.private.credits + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Gold:  </span></td><td class="ac-right-cell"><span>' + data.private.gold + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Free XP:	 </span></td><td class="ac-right-cell"><span>' + data.private.free_xp + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Premium:	 </span></td><td class="ac-right-cell"><span>' + data.private.is_premium.toString() + '</span></td></tr>\
-			<tr><td class="ac-left-cell"><span>Premium Expires At:	</span></td><td class="ac-right-cell"><span>' + new Date(data.private.premium_expires_at*1000).toString() + '</span></td></tr>\
-			<tr><td class="ac-left-cell"><span>Battle Life Time:  </span></td><td class="ac-right-cell"><span>' + ((data.private.battle_life_time/60)/60).toFixed(1) + ' hours</span></td></tr>' +
-			(tankKills ? 
-			'<tr><td colspan="2" class="ac-single-cell"><div><span>Most Killed Tank:  </span><span>' + mostKilled.value + ' kills - ' + ((mostKilled.value / data.statistics.all.frags) * 100).toFixed(3) + '%</span>\
+			<tr><td class="ac-left-cell"><span>Premium Expires At:	</span></td><td class="ac-right-cell"><span>' + new Date(data.private.premium_expires_at * 1000).toString() + '</span></td></tr>\
+			<tr><td class="ac-left-cell"><span>Battle Life Time:  </span></td><td class="ac-right-cell"><span>' + ((data.private.battle_life_time / 60) / 60).toFixed(1) + ' hours</span></td></tr>' +
+			(tankKills ?
+				'<tr><td colspan="2" class="ac-single-cell"><div><span>Most Killed Tank:  </span><span>' + mostKilled.value + ' kills - ' + ((mostKilled.value / data.statistics.all.frags) * 100).toFixed(3) + '%</span>\
 			<span>' + (mostKilledTank ? mostKilledTank.name : "Unknown Tank") + '</span><img src="' + (mostKilledTank ? mostKilledTank.images.big_icon : "") + '"/></div></td></tr>\
 			' : '') +
 			'<tr><td colspan="2" class="ac-single-cell"><span>End Private Data</span></td></tr>' +
 			'' : '') +
-			'<tr><td class="ac-left-cell"><span>Trees Cut:	</span></td><td class="ac-right-cell"><span>' + data.statistics.trees_cut + '</span></td></tr>\
+		'<tr><td class="ac-left-cell"><span>Trees Cut:	</span></td><td class="ac-right-cell"><span>' + data.statistics.trees_cut + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Battles:	 </span></td><td class="ac-right-cell"><span>' + data.statistics.all.battles + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Victories:  </span></td><td class="ac-right-cell"><span>' + data.statistics.all.wins + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Draws:  </span></td><td class="ac-right-cell"><span>' + data.statistics.all.draws + '</span></td></tr>\
@@ -165,7 +171,7 @@ function buildUserData(data) {
 			<tr><td class="ac-left-cell"><span>XP Earned:  </span></td><td class="ac-right-cell"><span>' + data.statistics.all.xp + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Average XP:	</span></td><td class="ac-right-cell"><span>' + data.statistics.all.battle_avg_xp + '</span></td></tr>\
 			<tr><td colspan="2" class="ac-single-cell"><div><span>Max XP:  </span><span>' + data.statistics.all.max_xp + '</span>\
-			<span>' + (maxXpTank ? maxXpTank.name : "Unknown Tank" ) + '</span><img src="' + (maxXpTank ? maxXpTank.images.big_icon : "") + '"/></div></td></tr>\
+			<span>' + (maxXpTank ? maxXpTank.name : "Unknown Tank") + '</span><img src="' + (maxXpTank ? maxXpTank.images.big_icon : "") + '"/></div></td></tr>\
 			<tr><td class="ac-left-cell"><span>Tanks Spotted:  </span></td><td class="ac-right-cell"><span>' + data.statistics.all.spotted + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Kills:  </span></td><td class="ac-right-cell"><span>' + data.statistics.all.frags + '</span></td></tr>\
 			<tr><td class="ac-left-cell"><span>Average Kills:  </span></td><td class="ac-right-cell"><span>' + ((data.statistics.all.frags / data.statistics.all.battles)).toFixed(3) + '</span></td></tr>\
@@ -222,29 +228,30 @@ function searchMap() {
 	}
 };
 
-function loadPlayerData(resp) {
+function loadPlayerData(res) {
 	document.getElementById('player-searching').innerText = '';
-	if(playerContainer) {
+	if (playerContainer) {
 		var element = document.createElement('div');
 		element.id = 'player-data-container';
-		var built = buildUserData(resp.data);
+		var built = buildUserData(res.data);
 		element.innerHTML = built;
 		playerContainer.appendChild(element);
 	}
 };
 
-function loadPlayerFailure(resp) {
+function loadPlayerFailure(res) {
 	document.getElementById('player-searching').innerText = '';
 	var message = undefined;
-	if(!resp.responseJSON) {
+	if (!res.error || !res.error.message) {
+		message = "There was an error in handling an error."
+	} else {
+		message = res.error.message;
+	}
+	if (!message) {
 		message = "There was an error in handling an error."
 	}
-	message = resp.responseJSON.Message;
-	if(!message) {
-		message = "There was an error in handling an error."
-	}
-	if(playerSearchError) {
-		switch(message) {
+	if (playerSearchError) {
+		switch (message) {
 			case ('NOT_ENOUGH_SEARCH_LENGTH'):
 				message = 'Username is not long enough to search.';
 				break;
@@ -286,18 +293,29 @@ function loadPlayerFailure(resp) {
 	}
 };
 
-function searchPlayer() {
+async function searchPlayer() {
 	if (playerSearchInput && playerTokenInput && playerSearchError && playerRegionDropdown) {
 		document.getElementById('player-searching').innerText = 'Searching... Please do not press button again.';
-		$('#player-data-container').remove();
+		const dataCont = document.getElementById('player-data-container');
+		if (dataCont) {
+			dataCont.remove();
+		}
 		playerSearchError.innerHTML = '';
 		var username = playerSearchInput.value;
 		var accessToken = playerTokenInput.value;
 		var region = playerRegionDropdown.value;
-		if(username) {
-			getJSON("/api/v1/user-data/?username=" + username 
-			+ ( accessToken ? ('&accessToken=' + accessToken) : '') 
-			+ ( region ? ('&region=' + region) : ''), loadPlayerData, loadPlayerFailure, '');
+		if (username) {
+			try {
+				const res = await getJSON(`/api/v1/user-data/?username=${username}${(accessToken ? ('&accessToken=' + accessToken) : '')}${(region ? ('&region=' + region) : '')}`)
+				if (res.status && res.status === 'ok') {
+					loadPlayerData(res);
+				} else {
+					loadPlayerFailure(res);
+				}
+			} catch (ex) {
+				console.log(ex);
+				loadPlayerFailure({ success: false, message: ex.message })
+			}
 		}
 	}
 };
@@ -324,16 +342,16 @@ window.onload = function () {
 	if (searchInput) {
 		searchInput.addEventListener("keyup", function (event) {
 			event.preventDefault();
-			if (event.keyCode === 13) {
+			if (event.key === "Enter") {
 				searchMap();
 			};
 		});
 	}
-	
-	if(playerSearchInput) {
+
+	if (playerSearchInput) {
 		playerSearchInput.addEventListener("keyup", function (event) {
 			event.preventDefault();
-			if (event.keyCode === 13) {
+			if (event.key === "Enter") {
 				searchPlayer();
 			};
 		});
