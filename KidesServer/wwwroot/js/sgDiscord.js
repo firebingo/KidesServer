@@ -29,7 +29,7 @@ async function loadMessageList() {
 	messageListAreaLoading.innerHTML = "<span>Loading...</span>";
 	try {
 		const res = await getJSON(`/api/v1/discord/message-count/list/?count=${counts['messageList']}&serverId=${serverId}\
-		&start=0&sort=${sortOrders['messageList']}&isDesc=${isDesc['messageList']}\
+		&start=0&sort=${sortOrders['messageList']}&isDesc=${isDesc['messageList']}&includeTotal=true\
 		${(filterInput['messageList'] ? (`&userFilter=${encodeURIComponent(filterInput['messageList'])}`) : '')}`);
 		if (res.success) {
 			messageListSucccess(res);

@@ -205,7 +205,7 @@ namespace KidesServer.Logic
 								FROM messages 
 								WHERE userID=@userId AND serverID=@serverId AND NOT isDeleted AND mesTime IS NOT NULL
 								GROUP BY DATE_FORMAT(mesTime, '%Y%m')
-								ORDER BY mesTime DESC;";
+								ORDER BY mesTime ASC;";
 				List<DiscordUserMessageDensity> density = new List<DiscordUserMessageDensity>();
 				await DataLayerShortcut.ExecuteReaderAsync<List<DiscordUserMessageDensity>>(ReadUserMessageDensity, density, AppConfig.Config.DBConfig.ConnectionString,
 					queryString, new MySqlParameter("@serverId", serverId), new MySqlParameter("@userId", userId));
