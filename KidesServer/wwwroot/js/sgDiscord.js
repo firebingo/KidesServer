@@ -9,11 +9,16 @@ const loadFuncs = {
 	wordListId: loadWordList, wordListFloor: loadWordList,
 	wordListEnglish: loadWordList, stats: loadStats
 };
+const loaded = {
+	messageList: false,
+	roleMesList: false,
+	emojiList: false,
+	statsUserCount: false,
+	statsUniqueUser: false
+}
 var serverId = '229596738615377920';
 const placeholderAvatar = 'https://discordapp.com/assets/6debd47ed13483642cf09e832ed0bc1b.png';
 var genericErrorArea = undefined;
-var loadProgress = 0;
-const endLoadCount = 5;
 
 async function getJSON(url) {
 	const res = await fetch(url);
@@ -45,7 +50,7 @@ async function loadMessageList() {
 function messageListSucccess(res) {
 	messageListAreaLoading.innerHTML = "";
 	messageListTable.innerHTML = buildMessageList(res.results);
-	loadProgress++;
+	loaded.messageList = true;
 }
 
 function messageListFailure(res) {
@@ -59,6 +64,7 @@ function messageListFailure(res) {
 		message = "There was an error in handling an error.";
 	}
 	messageListAreaLoading.innerHTML = "<span>" + message + "</span>";
+	loaded.messageList = true;
 }
 
 function buildMessageList(data) {
@@ -240,7 +246,6 @@ function roleListFailure(res) {
 	}
 	genericErrorArea.innerHTML = "<span>" + message + "</span>";
 	roleMessageListAreaLoading.innerHTML = "<span>Failed to load role list</span>";
-	loadProgress++;
 }
 
 async function loadRoleMessageList() {
@@ -264,7 +269,7 @@ async function loadRoleMessageList() {
 function roleMesListSucccess(res) {
 	roleMessageListAreaLoading.innerHTML = "";
 	roleMessageListTable.innerHTML = buildMessageRoleList(res.results);
-	loadProgress++;
+	loaded.roleMesList = true;
 }
 
 function roleMesListFailure(res) {
@@ -278,7 +283,7 @@ function roleMesListFailure(res) {
 		message = "There was an error in handling an error.";
 	}
 	roleMessageListAreaLoading.innerHTML = "<span>" + message + "</span>";
-	loadProgress++;
+	loaded.roleMesList = true;
 }
 
 function buildMessageRoleList(data) {
@@ -345,7 +350,7 @@ var emojiListAreaLoading = null;
 var emojiListTable = null;
 
 async function loadEmojiList() {
-	emojiListAreaLoading.innerHTML = "<span>Loading...</span>";
+	emojiListAreaLoading.innerHTML = "<span>Loading Emoji List...</span>";
 	try {
 		const res = await getJSON(`/api/v1/discord/emoji-count/list/?count=${counts['emojiList']}&serverId=${serverId}&start=0&sort=${sortOrders['emojiList']}\
 		&isDesc=${isDesc['emojiList']}${(filterInput['emojiList'] ? (`&nameFilter=${filterInput['emojiList']}`) : '')}\
@@ -364,7 +369,7 @@ async function loadEmojiList() {
 function emojiListSucccess(res) {
 	emojiListAreaLoading.innerHTML = "";
 	emojiListTable.innerHTML = buildEmojiList(res.results);
-	loadProgress++;
+	loaded.emojiList = true;
 }
 
 function emojiListFailure(res) {
@@ -378,7 +383,7 @@ function emojiListFailure(res) {
 		message = "There was an error in handling an error.";
 	}
 	emojiListAreaLoading.innerHTML = "<span>" + message + "</span>";
-	loadProgress++;
+	loaded.emojiList = true;
 }
 
 function buildEmojiList(data) {
@@ -392,8 +397,8 @@ function buildEmojiList(data) {
 	for (const item of data) {
 		html += '\
 		<tr>\
-			<td class="list-table-cell"><img id="emoji-' + item.emojiId + '" onerror="emojiOnError(\'' + item.emojiId + '\')" class="emoji-table-img '
-			+ (item.emojiId == '' ? 'hide-if-total' : '') + '" src="' + item.emojiImg.replace('.png', '.gif') + '"/></td>\
+			<td class="list-table-cell"><img id="emoji-' + item.emojiId + '" onload="emojiOnLoad(\'' + item.emojiId + '\')" class="emoji-table-img '
+			+ (item.emojiId == '' ? 'hide-if-total' : '') + '" src="' + item.emojiImg + '"/></td>\
 			<td class="list-table-cell"\>' + item.emojiName + '</td>\
 			<td class="list-table-cell">' + item.rank + '</td>\
 			<td class="list-table-cell">' + item.useCount + '</td>\
@@ -426,12 +431,15 @@ function buildEmojiList(data) {
 	return html;
 }
 
-function emojiOnError(id) {
+async function emojiOnLoad(id) {
 	const imageEl = document.getElementById('emoji-' + id);
-	if (imageEl) {
-		if (imageEl.src.indexOf('.gif') !== -1) {
-			imageEl.src = imageEl.src.replace('.gif', '.png');
-		}
+	if (imageEl && imageEl.src && !imageEl.src.includes('.gif')) {
+		try {
+			const res = await fetch(imageEl.src.replace('.png', '.gif'), { method: 'HEAD' });
+			if (res.ok) {
+				imageEl.src = imageEl.src.replace('.png', '.gif');
+			}
+		} catch { }
 	}
 }
 //#endregion
@@ -589,7 +597,7 @@ function changeStatDateGroup(type, increase) {
 async function loadUserCountStats() {
 	let stDate = new Date();
 	stDate = setDateForStat(stDate, 'statUCnt');
-	document.getElementById("user-count-stat-loading").innerHTML = "<span>Loading...</span>";
+	document.getElementById("user-count-stat-loading").innerHTML = "<span>Loading Stats...</span>";
 	try {
 		const res = await getJSON(`/api/v1/discord/stats/?serverId=${serverId}&type=0&startDate=${stDate.toISOString()}&dateGroup=${sortOrders['statUCnt']}`);
 		if (res.success) {
@@ -607,7 +615,7 @@ function statUserCountSuccess(res) {
 	document.getElementById('user-count-stat-chart').innerHTML = "";
 	buildStatValueChart(res.results, 'user-count-stat-chart', 'User Count', 'statUCnt');
 	document.getElementById("user-count-stat-loading").innerHTML = getStringForDateGroup(sortOrders['statUCnt']);;
-	loadProgress++;
+	loaded.statsUserCount = true;
 }
 
 function statUserCountFailure(res) {
@@ -621,13 +629,13 @@ function statUserCountFailure(res) {
 		message = "There was an error in handling an error.";
 	}
 	document.getElementById("user-count-stat-loading").innerHTML = "<span>" + message + "</span>";
-	loadProgress++;
+	loaded.statsUserCount = true;
 }
 
 async function loadUniqueUserStats() {
 	let stDate = new Date();
 	stDate = setDateForStat(stDate, 'statUnU');
-	document.getElementById("unique-user-stat-loading").innerHTML = "<span>Loading...</span>";
+	document.getElementById("unique-user-stat-loading").innerHTML = "<span>Loading Stats...</span>";
 	try {
 		const res = await getJSON(`/api/v1/discord/stats/?serverId=${serverId}&type=1&startDate=${stDate.toISOString()}&dateGroup=${sortOrders['statUnU']}`);
 		if (res.success) {
@@ -645,7 +653,7 @@ function statUniqueUserSuccess(res) {
 	document.getElementById('unique-user-stat-chart').innerHTML = "";
 	buildStatValueChart(res.results, 'unique-user-stat-chart', 'Unique Users', 'statUnU');
 	document.getElementById("unique-user-stat-loading").innerHTML = getStringForDateGroup(sortOrders['statUnU']);
-	loadProgress++;
+	loaded.statsUniqueUser = true;
 }
 
 function statUniqueUserFailure(res) {
@@ -659,7 +667,7 @@ function statUniqueUserFailure(res) {
 		message = "There was an error in handling an error.";
 	}
 	document.getElementById("unique-user-stat-loading").innerHTML = "<span>" + message + "</span>";
-	loadProgress++;
+	loaded.statsUniqueUser = true;
 }
 
 function setDateForStat(date, type) {
@@ -831,18 +839,18 @@ window.onload = function () {
 	loadFuncs['messageList']();
 	loadFuncs['emojiList']();
 	loadRoleList();
-	setTimeout(checkLoaded, 250);
+	setTimeout(checkLoaded, 100);
 
 	function onGoogleLoaded() {
 		loadFuncs['stats']();
 	}
 
 	function checkLoaded() {
-		if (loadProgress >= endLoadCount) {
+		if (loaded.messageList && loaded.roleMesList) {
 			document.getElementById('fade-parent').style.opacity = "1";
 			document.getElementById('loading-parent').style.display = "none";
 		} else {
-			setTimeout(checkLoaded, 250);
+			setTimeout(checkLoaded, 100);
 		}
 	}
 }

@@ -10,73 +10,73 @@
 	<meta name="defaultroledid" content="229598038438445056" />
 </head>
 <body>
-    <link rel="stylesheet" type="text/css" href="../Css/generic.min.css">
-    <link rel="stylesheet" type="text/css" href="../Css/sgDiscord.min.css">
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script src="../Js/moment.min.js"></script>
-    <script src="../Js/sgDiscord.min.js" type="application/javascript" charset="UTF-8"></script>
-    <div id="loading-parent" class="centered">Loading...</div>
-    <div id="fade-parent" class="fade-in">
-        <div id="generic-error"></div>
-        <div id="discord-widget">
-            <h2>Symphogear Discord</h2>
-            <iframe src="https://discordapp.com/widget?id=229596738615377920&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
-        </div>
-        <div id="message-user-info">
-            <div id="message-list" class="list-region">
-                <h2>Message Counts</h2>
-                <div id="message-table-area" class="table-area">
-                    <span id="message-table-loading" class="table-loading">Loading...</span>
-                    <table id="message-list-table" class="list-table"></table>
-                </div>
-            </div>
-            <div id="role-message-list" class="list-region">
-                <h2>Role Message Counts</h2>
-                <div id="role-message-table-area" class="table-area">
-                    <span id="role-message-table-loading" class="table-loading">Loading...</span>
-                    <table id="role-message-list-table" class="list-table"></table>
-                </div>
-            </div>
-        </div>
-        <div id="user-info" class="fade-in" style="display:none;">
-            <h2>User Info</h2>
-            <div id="user-info-table-area"></div>
-        </div>
-        <div id="server-stats">
-            <div id="user-count-stat" class="stat-chart">
-                <div class="stat-table-header">
-                    <button id="stat-u-cnt-down" onclick="changeStatDateGroup('statUCnt', false)">▼</button>
-                    <h2>User Count</h2>
-                    <button id="stat-u-cnt-up" onclick="changeStatDateGroup('statUCnt', true)">▲</button>
-                </div>
-                <span id="user-count-stat-loading" class="table-loading">Loading...</span>
-                <div id="user-count-stat-chart"></div>
-            </div>
-            <div id="unique-user-stat" class="stat-chart">
-                <div class="stat-table-header">
-                    <button id="stat-un-u-down" onclick="changeStatDateGroup('statUnU', false)">▼</button>
-                    <h2>Active User Count</h2>
-                    <button id="stat-un-u-up" onclick="changeStatDateGroup('statUnU', true)">▲</button>
-                </div>
-                <span id="unique-user-stat-loading" class="table-loading">Loading...</span>
-                <div id="unique-user-stat-chart"></div>
-            </div>
-        </div>
-        <div id="emoji-counts-list" class="list-region">
-            <h2>Emoji Counts</h2>
-            <div id="emoji-table-area" class="table-area">
-                <span id="emoji-table-loading" class="table-loading">Loading...</span>
-                <table id="emoji-list-table" class="list-table"></table>
-            </div>
-        </div>
-        <!--<div id="word-counts-list" class="list-region">
-            <h2>Word Counts</h2>
-            <button id="word-counts-load" onclick="loadWordList()">Load Word List</button>
-            <div id="word-table-area" class="table-area">
-                <span id="word-table-loading" class="table-loading"></span>
-                <table id="word-list-table" class="list-table"></table>
-            </div>
-        </div>-->
-    </div>
+	<link rel="stylesheet" type="text/css" href="../Css/generic.min.css">
+	<link rel="stylesheet" type="text/css" href="../Css/sgDiscord.min.css">
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="../Js/moment.min.js"></script>
+	<script src="../Js/sgDiscord.min.js" type="application/javascript" charset="UTF-8"></script>
+	<div id="loading-parent" class="centered">Loading...</div>
+	<div id="fade-parent" class="fade-in">
+		<div id="generic-error"></div>
+		<div id="discord-widget">
+			<h2>Symphogear Discord</h2>
+			<iframe src="https://discordapp.com/widget?id=229596738615377920&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
+		</div>
+		<div id="message-user-info">
+			<div id="message-list" class="list-region">
+				<h2>Message Counts</h2>
+				<div id="message-table-area" class="table-area">
+					<span id="message-table-loading" class="table-loading">Loading...</span>
+					<table id="message-list-table" class="list-table"></table>
+				</div>
+			</div>
+			<div id="role-message-list" class="list-region">
+				<h2>Role Message Counts</h2>
+				<div id="role-message-table-area" class="table-area">
+					<span id="role-message-table-loading" class="table-loading">Loading...</span>
+					<table id="role-message-list-table" class="list-table"></table>
+				</div>
+			</div>
+		</div>
+		<div id="user-info" class="fade-in" style="display:none;">
+			<h2>User Info</h2>
+			<div id="user-info-table-area"></div>
+		</div>
+		<div id="server-stats">
+			<div id="user-count-stat" class="stat-chart">
+				<div class="stat-table-header">
+					<button id="stat-u-cnt-down" onclick="changeStatDateGroup('statUCnt', false)">▼</button>
+					<h2>User Count</h2>
+					<button id="stat-u-cnt-up" onclick="changeStatDateGroup('statUCnt', true)">▲</button>
+				</div>
+				<span id="user-count-stat-loading" class="table-loading">Loading...</span>
+				<div id="user-count-stat-chart"></div>
+			</div>
+			<div id="unique-user-stat" class="stat-chart">
+				<div class="stat-table-header">
+					<button id="stat-un-u-down" onclick="changeStatDateGroup('statUnU', false)">▼</button>
+					<h2>Active User Count</h2>
+					<button id="stat-un-u-up" onclick="changeStatDateGroup('statUnU', true)">▲</button>
+				</div>
+				<span id="unique-user-stat-loading" class="table-loading">Loading...</span>
+				<div id="unique-user-stat-chart"></div>
+			</div>
+		</div>
+		<div id="emoji-counts-list" class="list-region">
+			<h2>Emoji Counts</h2>
+			<div id="emoji-table-area" class="table-area">
+				<span id="emoji-table-loading" class="table-loading">Loading...</span>
+				<table id="emoji-list-table" class="list-table"></table>
+			</div>
+		</div>
+		<!--<div id="word-counts-list" class="list-region">
+			<h2>Word Counts</h2>
+			<button id="word-counts-load" onclick="loadWordList()">Load Word List</button>
+			<div id="word-table-area" class="table-area">
+				<span id="word-table-loading" class="table-loading"></span>
+				<table id="word-list-table" class="list-table"></table>
+			</div>
+		</div>-->
+	</div>
 </body>
 </html>
