@@ -1,153 +1,164 @@
 html {
-	body {
-		@title-font-size: 1.7rem;
-		@map-prev-size: 8rem;
-		@map-image-size: 41.25rem;
-		@spacing-size: 0.375rem;
-		@big-spcaing-size: 0.9375rem;
-		@wot-image-width: 10rem;
-		@wot-image-height: 6.15rem;
-		@small-border-width: 0.0625rem;
-		@base-link-color: #0096cf;
-		
-		#page-master {
-			border-color: inherit;
-			width: auto;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
-			
-			.title-href {
-				font-size: @title-font-size;
-			}
-			
-			#map-container {
-				border-color: inherit;
-				display: flex;
-				align-items: center;
-				flex-direction: column;
-				#image-container {
-					display: flex;
-					flex-direction: column;
-					align-items: center;
-					padding: @big-spcaing-size;
-					#map-title {
-						font-size: @title-font-size;
-						padding-bottom: @big-spcaing-size;
-					}
-					
-					#image-area {
-						height: @map-image-size;
-					}
-				}
-				
-				#hide-prev-btn {
-					margin-bottom: @spacing-size;
-				}
-				
-				#map-selection {
-					display: flex;
-					padding-bottom: @big-spcaing-size;
-				}
-				
-				#image-previews {
-					flex-shrink: 1;
-					justify-content: center;
-					margin: auto;
-					display: flex;
-					flex-direction: row;
-					flex-wrap: wrap;
-					border-color: inherit;
-					div {
-						border-color: inherit;
-						.preview-container {
-							border: @small-border-width solid;
-							border-color: inherit;
-							img {
-								padding: @spacing-size;
-								width: @map-prev-size;
-								height: @map-prev-size;
-							}
-						}
-					}
-				}
-			}
-			
-			#hide-player-btn {
-				margin-top: @spacing-size;
-			}
-			
-			#player-container {
-				border-color: inherit;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				padding: @spacing-size;
-				#player-search-title {
-					font-size: @title-font-size;
-				}
-	
-				.player-input-title {
-					float: right;
-				}
-				
-				#player-search-error {
-					color: #AF0000;
-				}
-				
-				#player-data-container {
-					padding: @spacing-size;
-					margin: @spacing-size;
-					border: @small-border-width solid;
-					border-color: inherit;
-					display: flex;
-					
-					#player-table {
-						width: auto;
-						tr {
-							.ac-left-cell {
-								span {
-									float: left;
-								}
-							}
-							.ac-right-cell {
-								span {
-									float: left;
-								}
-							}
-							.ac-single-cell {
-								text-align: center;
-								div {
-									display: flex;
-									flex-direction: column;
-									align-items: center;
-								}
-								img {
-									width: @wot-image-width;
-									height: @wot-image-height;
-								}
-							}
-						}
-					}
-				}
-			}
-			
-			
-			table {
-				font-size: inherit;
-			}
-			
-			button {
-				font-size: inherit;
-			}
-			
-			input {
-				font-size: inherit;
-			}
-			
-			select {
-				font-size: inherit;
-			}
-		}
-	}
+  body {
+    @title-font-size: 1.7rem;
+    @map-prev-size: 8rem;
+    @map-image-size: 41.25rem;
+    @spacing-size: 0.375rem;
+    @big-spcaing-size: 0.9375rem;
+    @wot-image-width: 10rem;
+    @wot-image-height: 6.15rem;
+    @small-border-width: 0.0625rem;
+    @base-link-color: #0096cf;
+
+    #page-master {
+      border-color: inherit;
+      width: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .title-href {
+        font-size: @title-font-size;
+      }
+
+      #map-container {
+        border-color: inherit;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        #image-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: @big-spcaing-size;
+          #map-title {
+            font-size: @title-font-size;
+            padding-bottom: @big-spcaing-size;
+          }
+
+          #image-area {
+            height: @map-image-size;
+          }
+        }
+
+        #hide-prev-btn {
+          margin-bottom: @spacing-size;
+        }
+
+        #map-selection {
+          display: flex;
+          padding-bottom: @big-spcaing-size;
+        }
+
+        #image-previews {
+          flex-shrink: 1;
+          justify-content: center;
+          margin: auto;
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          border-color: inherit;
+          div {
+            border-color: inherit;
+            .preview-container {
+              border: @small-border-width solid;
+              border-color: inherit;
+              img {
+                padding: @spacing-size;
+                width: @map-prev-size;
+                height: @map-prev-size;
+              }
+            }
+          }
+        }
+      }
+
+      #hide-player-btn {
+        margin-top: @spacing-size;
+      }
+
+      #player-container {
+        border-color: inherit;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: @spacing-size;
+
+        .inputs-table {
+          width: 400px;
+          .inputs-row {
+            align-items: center;
+            display: grid;
+            grid-template-columns: 110px 1fr 70px 70px;
+            margin: 3px 0;
+          }
+        }
+
+        #player-search-title {
+          font-size: @title-font-size;
+        }
+
+        .player-input-title {
+          justify-self: right;
+          margin-right: 5px;
+        }
+
+        #player-search-error {
+          color: #af0000;
+        }
+
+        #player-data-container {
+          padding: @spacing-size;
+          margin: @spacing-size;
+          border: @small-border-width solid;
+          border-color: inherit;
+          display: flex;
+
+          #player-table {
+            width: auto;
+            tr {
+              .ac-left-cell {
+                span {
+                  float: left;
+                }
+              }
+              .ac-right-cell {
+                span {
+                  float: left;
+                }
+              }
+              .ac-single-cell {
+                text-align: center;
+                div {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                }
+                img {
+                  width: @wot-image-width;
+                  height: @wot-image-height;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      table {
+        font-size: inherit;
+      }
+
+      button {
+        font-size: inherit;
+      }
+
+      input {
+        font-size: inherit;
+      }
+
+      select {
+        font-size: inherit;
+      }
+    }
+  }
 }

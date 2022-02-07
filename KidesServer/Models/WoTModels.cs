@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
+#pragma warning disable IDE1006 // Naming Styles
 namespace KidesServer.Models
 {
 	[Serializable]
@@ -115,4 +115,44 @@ namespace KidesServer.Models
 		public int explosion_hits_received;
 		public float tanking_factor;
 	}
+
+	public class WotVehicles
+	{
+		public string status { get; set; }
+		public WotError error { get; set; }
+		public Dictionary<string, WotVehicle> data { get; set; }
+	}
+
+	public class WotVehicle
+	{
+		public int tank_id { get; set; }
+		public string name { get; set; }
+		public string short_name { get; set; }
+		public Dictionary<string, string> images { get; set; }
+		public int kills { get; set; }
+	}
+
+	public class WotUserInfoReturn
+	{
+		public string status { get; set; }
+		public WotError error { get; set; }
+		public WotUser data { get; set; }
+		public WotVehicle most_killed { get; set; }
+		public WotVehicle max_xp { get; set; }
+		public WotVehicle max_frags { get; set; }
+		public WotVehicle max_damage { get; set; }
+	}
+
+	public class WotOpenidReturn
+	{
+		public string status { get; set; }
+		public WotError error { get; set; }
+		public WotOpenid data { get; set; }
+	}
+	public class WotOpenid
+	{
+		public string location { get; set; }
+	}
+
 }
+#pragma warning restore IDE1006 // Naming Styles

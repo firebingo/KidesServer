@@ -1,64 +1,73 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <meta name="theme-color" content="#393939" />
     <meta name="viewport" content="width=device-width, initial-scale=0.5" />
-</head>
-<body>
-    <link rel="stylesheet" type="text/css" href="../Css/generic.min.css">
-    <link rel="stylesheet" type="text/css" href="../Css/wotMaps.min.css">
+  </head>
+  <body>
+    <link rel="stylesheet" type="text/css" href="../Css/generic.min.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/wotMaps.min.css" />
     <script src="../Js/wotMaps.min.js"></script>
-    <div id=page-master>
-        <button onclick="hideSection('guide')">hide</button>
-        <div id="map-container">
-            <div class="title-href"><a href="https://www.reddit.com/r/WorldofTanks/comments/4sulo8/colds_map_guides_to_pubs/" target="_blank">Coldstream's</a><span>/</span><a href="https://www.reddit.com/r/WorldofTanks/comments/5gwl42/exos_maptactic_series_with_paris/" target="_blank">Exo's Map Guides</a></div>
-            <div id="image-container">
-                <span id="map-title"></span>
-                <span id="search-span">Search For or Select Map</span>
-                <img id="image-area" />
-            </div>
-            <div id="map-selection">
-                <input id="map-search" type="text" />
-                <button onclick="searchMap()">Search</button>
-            </div>
-            <button id="hide-prev-btn" onclick="hideSection('previews')">hide</button>
-            <div id="image-previews"></div>
+    <div id="page-master">
+      <button onclick="hideSection('guide')">hide</button>
+      <div id="map-container">
+        <div class="title-href">
+          <a
+            href="https://www.reddit.com/r/WorldofTanks/comments/4sulo8/colds_map_guides_to_pubs/"
+            target="_blank"
+            >Coldstream's</a
+          ><span>/</span
+          ><a
+            href="https://www.reddit.com/r/WorldofTanks/comments/5gwl42/exos_maptactic_series_with_paris/"
+            target="_blank"
+            >Exo's Map Guides</a
+          >
         </div>
-        <button id="hide-player-btn" onclick="hideSection('player')">hide</button>
-        <div id="player-container">
-            <span id="player-search-title">Player Search:</span>
-            <table>
-                <tbody>
-                    <tr class="dropdown-row">
-                        <td><span class="player-input-title">Region:</span></td>
-                        <td>
-                            <select id="player-region-dropdown">
-                                <option value="na">na</option>
-                                <option value="eu">eu</option>
-                                <option value="ru">ru</option>
-                                <option value="kr">kr</option>
-                                <option value="asia">asia</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><span class="player-input-title">Username:</span></td>
-                        <td><input id="player-search-input" type="text"></input><button onclick="searchPlayer()">Search</button></td>
-                    </tr>
-                    <tr>
-                        <td><span class="player-input-title">Access Token:</span></td>
-                        <td>
-                            <input id="player-token-input" type="text"></input>
-                            <span class='hover-span' title="If you have an access token to receive extended data from the WoT api you can use it here. I do not store the token or any data returned from the api, however the token will be
-							sent via http which can be insecure.">Info</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div><span id="player-search-error"></span></div>
-            <div><span id="player-searching"></span></div>
+        <div id="image-container">
+          <span id="map-title"></span>
+          <span id="search-span">Search For or Select Map</span>
+          <img id="image-area" />
         </div>
+        <div id="map-selection">
+          <input id="map-search" type="text" />
+          <button onclick="searchMap()">Search</button>
+        </div>
+        <button id="hide-prev-btn" onclick="hideSection('previews')">
+          hide
+        </button>
+        <div id="image-previews"></div>
+      </div>
+      <button id="hide-player-btn" onclick="hideSection('player')">hide</button>
+      <div id="player-container">
+        <span id="player-search-title">Player Search:</span>
+        <div class="inputs-table">
+          <div class="inputs-row">
+            <span class="player-input-title">Region:</span>
+            <select id="player-region-dropdown">
+              <option value="na">na</option>
+              <option value="eu">eu</option>
+              <option value="ru">ru</option>
+              <option value="asia">asia</option>
+            </select>
+          </div>
+          <div class="inputs-row">
+            <span class="player-input-title">Username:</span>
+            <input id="player-search-input" type="text" />
+            <button onclick="searchPlayer()">Search</button>
+          </div>
+          <div class="inputs-row">
+            <span class="player-input-title">Access Token:</span>
+            <input id="player-token-input" type="text" disabled />
+            <button id="login-button" onclick="getToken()">Login</button>
+            <button id="logout-button" onclick="logout()" disabled="true">
+              Logout
+            </button>
+          </div>
+        </div>
+        <div><span id="player-search-error"></span></div>
+        <div><span id="player-searching"></span></div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
