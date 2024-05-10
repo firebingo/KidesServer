@@ -1,139 +1,349 @@
 ﻿<!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
+  <head>
     <meta charset="utf-8" />
     <meta name="theme-color" content="#393939" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Icebingo.io</title>
-</head>
-<body>
+  </head>
+  <body>
     <style>
-        html {
-            background-color: #393939;
-            color: rgba(255,255,255,.7);
-            margin: 0;
-            padding: 0;
-        }
+      html {
+        background-color: #393939;
+        color: rgba(255, 255, 255, 0.7);
+        margin: 0;
+        padding: 0;
+      }
 
+      body {
+        margin: 15px auto;
+        max-width: 800px;
+      }
+
+      a {
+        color: #0096cf;
+      }
+
+      a:visited {
+        color: #86778c;
+      }
+
+      @media only screen and (max-width: 800px) {
         body {
-            margin: 15px auto;
-            max-width: 800px;
+          margin: 15px;
         }
 
-        a {
-            color: #0096cf;
+        iframe[src*="youtube.com"] {
+          width: 350px;
+          height: 197px;
         }
-
-            a:visited {
-                color: #86778c;
-            }
-
-        @media only screen and (max-width: 800px) {
-            body {
-                margin: 15px;
-            }
-
-            iframe[src*="youtube.com"] {
-                width: 350px;
-                height: 197px;
-            }
-        }
+      }
     </style>
     <h1>Icebingo Productions</h1>
     <div>
-        <h2>Introduction</h2>
-        Hello! I am Matthew Kides, a software developer currently living in Arizona. I am currently working for a company named Harkins Theaters doing various web and app development. Though I do also enjoy working on game development projects and some 3d modeling in my spare time.
-        <br /><br />
-        Thank you for reading and enjoy your stay!
+      <h2>Introduction</h2>
+      Hello! I am Matthew Kides, a software developer currently living in
+      Arizona. I am currently working for a company named Harkins Theaters doing
+      various web and app development. Though I do also enjoy working on game
+      development projects and some 3d modeling in my spare time.
+      <br /><br />
+      Thank you for reading and enjoy your stay!
     </div>
     <div>
-        <h2>Projects</h2>
-        <h3><strong><a href="https://github.com/firebingo/HueScreenAmbience" target="_blank" rel="noopener noreferrer">Screen Ambience</a>:</strong></h3>
-        A console app for syncing a screen with Phillips Hue lights and other RGB devices such as keyboards and lightstrips.
-        <br /><br />
-        Last Updated: 2022
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://github.com/firebingo/SGDiscordBot" target="_blank" rel="noopener noreferrer">Unnamed Discord Bot</a>:</strong></h3>
-        A Discord bot for a server I moderate. Logs messages and information about the servers it is on. Can collect various statistics using stored data. Written in .NET using Discord.Net and stores data in a MySQL DB running InnoDB.
-        <br /><br />
-        Last Updated: 2022
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://github.com/firebingo/PodcastHelper" target="_blank" rel="noopener noreferrer">Podcast Helper</a>:</strong></h3>
-        A simple WPF app I use to help me track what podcasts I am listening to. Uses VLC as its player and connects to it via its web api.
-        <br /><br />
-        Last Updated: Nov, 2018
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://github.com/firebingo/CSGO-CUE" target="_blank" rel="noopener noreferrer">CSGO-CUE</a>:</strong></h3>
-        <iframe type="text/html" width="640" height="360" src="https://www.youtube.com/embed/zVNSKzMHvwc" frameborder="0"></iframe>
-        <br />
-        A C# console application for using the Counter-Strike Global Offensive game state integration with the Corsair Utility Engine for lighting effects on Corsair RGB Keyboards. Currently back lights the keyboard based on team and includes effects for the bomb timer. This includes back light flashing red and a digital number on the numpad along with lighting numpad keys green to show the current time. Also includes lighting for weapons and their status on the number keys, and health and armor bars on the function keys.
-        <br /><br />
-        Last Updated: May, 2018
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://github.com/firebingo/MinerPrototype" target="_blank" rel="noopener noreferrer">Miner Prototype</a>:</strong></h3>
-        <iframe type="text/html" width="640" height="360" src="https://www.youtube.com/embed/rQwzvk_42xU" frameborder="0"></iframe>
-        <br />
-        A basic unity prototype for a cave exploration rts based on the game Lego Rock Raiders. Contains 3d tilemap generation from static meshes, 2 types of resources, and basic AI. You can hit K to enter sandbox mode and use the mouse buttons to place/delete walls. You can also use 3 and 6 to switch between wall types. Dev branch also contains work on a WPF application for building maps.
-        <br /><br />
-        Last Updated: Jun, 2017
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://github.com/firebingo/GeoEdit" target="_blank" rel="noopener noreferrer">GeoEdit</a>:</strong></h3>
-        <iframe type="text/html" width="640" height="360" src="https://www.youtube.com/embed/u5WwEW2oaaQ" frameborder="0"></iframe>
-        <br />
-        An editor plugin for Unity that allows direct geometry modification. GeoEdit is compatible with any mesh in Unity. Allows for multiple vertex and face transformation. Also contains functions for extruding and tessellating faces.
-        <br /><br />
-        Last Updated: Dec, 2015
-        <br />
-        Other Contributors: <a href="https://github.com/Hukacikanaka" target="_blank" rel="noopener noreferrer">Alex</a>
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://github.com/firebingo/Cubed" target="_blank" rel="noopener noreferrer">Cubed/Shape Switch</a>:</strong></h3>
-        <iframe type="text/html" width="640" height="360" src="https://www.youtube.com/embed/5-nYVfAULHA" frameborder="0"></iframe>
-        <br />
-        Cubed started as a 3d 3rd person level based platformer where the player was a Cube. Turned out Cubes don't work well for precision platforming so the game was turned into a puzzle platformer called Shape Switch. The player can be either a sphere or cube and has the ability to switch between the different shapes placed on the map. Shapes can also absorb each other and gain the ability to switch in place. Each shape has it's unique advantages to navigating the levels. Project currently only has 1 test level with 4 shapes that takes about 10 minutes to complete. Two levels from the Cubed days also exist in the project but are not guaranteed to run properly. Features a basic main menu and pause menu with options to restart, modify control sensitivity, and graphics options with live modification. Has auto and manual camera controls with collision detection.
-        <br /><br />
-        Last Updated: Nov, 2015
-        <br />
-        Other Contributors: <a href="https://github.com/Hukacikanaka" target="_blank" rel="noopener noreferrer">Alex</a>, <a href="https://github.com/RoyalStallion" target="_blank" rel="noopener noreferrer">Rudy</a>, <a href="https://github.com/Mcitrin" target="_blank" rel="noopener noreferrer">Mike</a>
-        <br /><br />
-        <hr />
-        <br />
-        <h3><strong><a href="https://server.icebingo.io" target="_blank" rel="noopener noreferrer">server.icebingo.io</a>:</strong></h3>
-        Personal website for miscellaneous use. Has some information used for a Discord server. Also has a set of maps for World of Tanks and a player search to get data from their API.
-        <br /><br />
-        Last Updated: 2021
-        <br /><br />
-        <hr />
-        <br /><br />
-        <a href="https://server.icebingo.io/api/v1/files/get-file/kidesresume.pdf?directory=sharex/icebingoio" target="_blank" rel="noopener noreferrer">Resume</a>
-        <br />
-        <a href="https://server.icebingo.io/api/v1/files/get-file/CodeExamples.zip?directory=sharex/icebingoio">Other Code Examples</a> (44MB)
-        <br />
-        <a href="https://server.icebingo.io/api/v1/files/get-file/RenderExamples.zip?directory=sharex/icebingoio">Art Examples</a> (41MB)
+      <h2>Projects</h2>
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/BeatSaberReplayHistory"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Beat Saber Replay Charts</a
+          >:</strong
+        >
+      </h3>
+      <img
+        style="width: 640px; object-fit: contain"
+        src="https://server.icebingo.net/api/v1/files/get-file/2024-05-09_18-57-21_ReplayHistoryUI.Desktop.png?directory=sharex"
+        alt="Example Beat Saber Replay Charts Image"
+      />
+      <br />
+      A desktop app written with Avalonia to chart data processed from Beat
+      Saber replays.
+      <br /><br />
+      Last Updated: 2024
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/HueScreenAmbience"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Screen Ambience</a
+          >:</strong
+        >
+      </h3>
+      A console app for syncing a screen with Phillips Hue lights and other RGB
+      devices such as keyboards and lightstrips.
+      <br /><br />
+      Last Updated: 2024
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/FlashCardsTool"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Flash Cards Tool</a
+          >:</strong
+        >
+      </h3>
+      A basic web app for flash cards. Written using Blazor.
+      <br /><br />
+      Last Updated: 2024
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/SGDiscordBot"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Unnamed Discord Bot</a
+          >:</strong
+        >
+      </h3>
+      A Discord bot for a server I moderate. Logs messages and information about
+      the servers it is on. Can collect various statistics using stored data.
+      Written in .NET using Discord.Net and stores data in a MariaDB instance
+      running InnoDB.
+      <br /><br />
+      Last Updated: 2023
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/PodcastHelper"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Podcast Helper</a
+          >:</strong
+        >
+      </h3>
+      A simple WPF app I use to help me track what podcasts I am listening to.
+      Uses VLC as its player and connects to it via its web api.
+      <br /><br />
+      Last Updated: Nov, 2018
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/CSGO-CUE"
+            target="_blank"
+            rel="noopener noreferrer"
+            >CSGO-CUE</a
+          >:</strong
+        >
+      </h3>
+      <iframe
+        type="text/html"
+        width="640"
+        height="360"
+        src="https://www.youtube.com/embed/zVNSKzMHvwc"
+        frameborder="0"
+      ></iframe>
+      <br />
+      A C# console application for using the Counter-Strike Global Offensive
+      game state integration with the Corsair Utility Engine for lighting
+      effects on Corsair RGB Keyboards. Currently back lights the keyboard based
+      on team and includes effects for the bomb timer. This includes back light
+      flashing red and a digital number on the numpad along with lighting numpad
+      keys green to show the current time. Also includes lighting for weapons
+      and their status on the number keys, and health and armor bars on the
+      function keys.
+      <br /><br />
+      Last Updated: May, 2018
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/MinerPrototype"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Miner Prototype</a
+          >:</strong
+        >
+      </h3>
+      <iframe
+        type="text/html"
+        width="640"
+        height="360"
+        src="https://www.youtube.com/embed/rQwzvk_42xU"
+        frameborder="0"
+      ></iframe>
+      <br />
+      A basic unity prototype for a cave exploration rts based on the game Lego
+      Rock Raiders. Contains 3d tilemap generation from static meshes, 2 types
+      of resources, and basic AI. You can hit K to enter sandbox mode and use
+      the mouse buttons to place/delete walls. You can also use 3 and 6 to
+      switch between wall types. Dev branch also contains work on a WPF
+      application for building maps.
+      <br /><br />
+      Last Updated: Jun, 2017
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/GeoEdit"
+            target="_blank"
+            rel="noopener noreferrer"
+            >GeoEdit</a
+          >:</strong
+        >
+      </h3>
+      <iframe
+        type="text/html"
+        width="640"
+        height="360"
+        src="https://www.youtube.com/embed/u5WwEW2oaaQ"
+        frameborder="0"
+      ></iframe>
+      <br />
+      An editor plugin for Unity that allows direct geometry modification.
+      GeoEdit is compatible with any mesh in Unity. Allows for multiple vertex
+      and face transformation. Also contains functions for extruding and
+      tessellating faces.
+      <br /><br />
+      Last Updated: Dec, 2015
+      <br />
+      Other Contributors: <a
+        href="https://github.com/Hukacikanaka"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Alex</a
+      >
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://github.com/firebingo/Cubed"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Cubed/Shape Switch</a
+          >:</strong
+        >
+      </h3>
+      <iframe
+        type="text/html"
+        width="640"
+        height="360"
+        src="https://www.youtube.com/embed/5-nYVfAULHA"
+        frameborder="0"
+      ></iframe>
+      <br />
+      Cubed started as a 3d 3rd person level based platformer where the player
+      was a Cube. Turned out Cubes don't work well for precision platforming so
+      the game was turned into a puzzle platformer called Shape Switch. The
+      player can be either a sphere or cube and has the ability to switch
+      between the different shapes placed on the map. Shapes can also absorb
+      each other and gain the ability to switch in place. Each shape has it's
+      unique advantages to navigating the levels. Project currently only has 1
+      test level with 4 shapes that takes about 10 minutes to complete. Two
+      levels from the Cubed days also exist in the project but are not
+      guaranteed to run properly. Features a basic main menu and pause menu with
+      options to restart, modify control sensitivity, and graphics options with
+      live modification. Has auto and manual camera controls with collision
+      detection.
+      <br /><br />
+      Last Updated: Nov, 2015
+      <br />
+      Other Contributors: <a
+        href="https://github.com/Hukacikanaka"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Alex</a
+      >, <a
+        href="https://github.com/RoyalStallion"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Rudy</a
+      >, <a
+        href="https://github.com/Mcitrin"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Mike</a
+      >
+      <br /><br />
+      <hr />
+      <br />
+      <h3>
+        <strong
+          ><a
+            href="https://server.icebingo.io"
+            target="_blank"
+            rel="noopener noreferrer"
+            >server.icebingo.io</a
+          >:</strong
+        >
+      </h3>
+      Personal website for miscellaneous use. Has some information used for a
+      Discord server. Also has a set of maps for World of Tanks and a player
+      search to get data from their API.
+      <br /><br />
+      Last Updated: 2021
+      <br /><br />
+      <hr />
+      <br /><br />
+      <a
+        href="https://server.icebingo.io/api/v1/files/get-file/kidesresume.pdf?directory=sharex/icebingoio"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Resume</a
+      >
+      <br />
+      <a
+        href="https://server.icebingo.io/api/v1/files/get-file/CodeExamples.zip?directory=sharex/icebingoio"
+        >Other Code Examples</a
+      > (44MB)
+      <br />
+      <a
+        href="https://server.icebingo.io/api/v1/files/get-file/RenderExamples.zip?directory=sharex/icebingoio"
+        >Art Examples</a
+      > (41MB)
     </div>
     <br />
     <div>
-        <h2>Contact</h2>
-        If you have any questions about my work, projects, or just want to talk about anything else, feel free to contact me through any of the links provided on this website. The preferred methods of contact though would either be through email or reddit.
-        <br /><br />
-        <a href="mailto:matthew.t.kides@gmail.com">Email</a>
-        <br /><br />
-        <a href="https://github.com/firebingo" target="_blank">GitHub</a>
-        <br /><br />
-        <a href="https://www.linkedin.com/in/matthew-kides-923960110" target="_blank">LinkedIn</a>
-        <br /><br />
-        <a href="https://youtube.com/icebingo9" target="_blank">Youtube</a>
+      <h2>Contact</h2>
+      If you have any questions about my work, projects, or just want to talk
+      about anything else, feel free to contact me through any of the links
+      provided on this website. The preferred methods of contact though would
+      either be through email or reddit.
+      <br /><br />
+      <a href="mailto:matthew.t.kides@gmail.com">Email</a>
+      <br /><br />
+      <a href="https://github.com/firebingo" target="_blank">GitHub</a>
+      <br /><br />
+      <a
+        href="https://www.linkedin.com/in/matthew-kides-923960110"
+        target="_blank"
+        >LinkedIn</a
+      >
+      <br /><br />
+      <a href="https://youtube.com/icebingo9" target="_blank">Youtube</a>
     </div>
-</body>
+  </body>
 </html>
