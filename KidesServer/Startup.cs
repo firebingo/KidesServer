@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
-using KidesServer.Helpers;
+﻿using KidesServer.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
+using System.IO;
+using System.IO.Compression;
 
 namespace KidesServer
 {
@@ -76,7 +76,7 @@ namespace KidesServer
 			AppDomain.CurrentDomain.SetData("DataDirectory", Path.Combine(env.ContentRootPath, "App_Data"));
 			Directory.CreateDirectory($"{AppDomain.CurrentDomain.GetData("DataDirectory")}\\Temp");
 
-			app.UseHttpsRedirection();
+			//app.UseHttpsRedirection();
 			app.UseResponseCompression();
 			app.UseStaticFiles();
 			app.UseCookiePolicy(new CookiePolicyOptions()
